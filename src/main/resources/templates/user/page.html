@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<h2>User List</h2>
+
+<table id="userTable" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <!-- Add other user fields as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- User data will be populated here using JavaScript -->
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        // Call the API to get the list of users
+        $.ajax({
+            url: 'http://localhost:1999/api/users',
+            type: 'GET',
+            success: function (data) {
+                // Populate the user data into the table
+                populateUserData(data);
+            },
+            error: function () {
+                alert('Failed to fetch user data.');
+            }
+        });
+
+        function populateUserData(users) {
+            var tableBody = $('#userTable tbody');
+
+            // Clear existing rows
+            tableBody.empty();
+
+            // Use a for-of loop for iteration
+            for (var user of users) {
+                var row = '<tr>' +
+                    '<td>' + user.userId + '</td>' +
+                    '<td>' + user.username + '</td>' +
+                    '</tr>';
+                tableBody.append(row);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
