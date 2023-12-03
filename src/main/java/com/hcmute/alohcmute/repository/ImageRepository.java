@@ -1,4 +1,4 @@
-package com.hcmute.alohcmute.reponsitory;
+package com.hcmute.alohcmute.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
