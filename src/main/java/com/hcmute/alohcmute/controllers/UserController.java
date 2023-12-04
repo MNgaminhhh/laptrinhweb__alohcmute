@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserController {
     @GetMapping("/users")
     public String showUsers(Model model) {
-        return "user/page";
+        return "user/alluser";
     }
 }
