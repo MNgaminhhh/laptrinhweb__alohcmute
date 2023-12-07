@@ -33,6 +33,8 @@ public class UserService {
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
+    public Optional<User> getUserByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
     // Các phương thức khác tương tự có thể được thêm vào tùy theo yêu cầu kinh doanh
 }
