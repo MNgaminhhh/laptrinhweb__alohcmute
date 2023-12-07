@@ -10,4 +10,8 @@ public class UserController {
     public String showUsers(Model model) {
         return "user/alluser";
     }
+    @GetMapping("/login")
+    public String showLogin(Model model) {
+        return "login/login";
+    }
 }

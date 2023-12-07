@@ -30,5 +30,9 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     // Các phương thức khác tương tự có thể được thêm vào tùy theo yêu cầu kinh doanh
 }
