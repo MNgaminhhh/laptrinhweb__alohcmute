@@ -2,8 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
+    <link th:href="@{css/home.css}" rel="stylesheet">
+    <link th:href="@{css/style.css}" rel="stylesheet">
+    <link th:href="@{css/footer.css}" rel="stylesheet">
 </head>
 <body>
+    <div th:include="common/user/template_user.html::header"></div>
 <div th:if="${param.error}">
     Invalid username or password.
 </div>
@@ -15,5 +19,6 @@
     <div><label> Password: <input type="password" name="password"/> </label></div>
     <div><input type="submit" value="Sign In"/></div>
 </form>
+<div th:include="common/user/template_user.html::footer"></div>
 </body>
 </html>
