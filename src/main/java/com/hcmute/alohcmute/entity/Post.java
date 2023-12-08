@@ -22,7 +22,6 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_ID", nullable = false)
-    @JsonIgnore
     private User user;
 
     private String content;
