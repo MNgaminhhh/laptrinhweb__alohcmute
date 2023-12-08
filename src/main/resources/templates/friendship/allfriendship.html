@@ -15,39 +15,39 @@
 <table id="friendshipTable" border="1">
     <thead>
         <tr>
-            <th>UserID1</th>
-            <th>UserID2</th>
             <th>status</th>
         </tr>
     </thead>
     <tbody>
+
     </tbody>
 </table>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $.ajax({
-            url: 'http:/localhost:1999/api/friendship',
+            url: 'http://localhost:1999/api/friendship',
             type: GET,
-            success: function(data) {
-
+            success: function (data) {
+                // Populate the user data into the table
+                populateFriendship(data);
             },
-            error: function(){
-                alert('Failed to fetch friendship')
+            error: function () {
+                alert('Failed to fetch user data.');
             }
         })
 
         function populateFriendship(data) {
-            var tableBody = $('#friendshipTable tbody')
+            var tableBody = $('#friendshipTable tbody');
 
-            tableBody.empty()
+            // Clear existing rows
+            tableBody.empty();
 
-            for (var friendship of data) {
+            // Use a for-of loop for iteration
+            for (var user of users) {
                 var row = '<tr>' +
-                        '<td>' + data.userId1 + '</td>' +
-                        '<td>' + data.userId2 + '</td>' +
-                        '<td>' + data.status + '</td>' +
-                        '</tr>'
+                    '<td>' + data.status + '</td>' +
+                    '</tr>';
                 tableBody.append(row);
             }
         }
