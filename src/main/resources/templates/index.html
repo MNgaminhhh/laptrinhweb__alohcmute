@@ -12,19 +12,15 @@
 <body>
 	<div th:include="common/user/template_user.html::header"></div>
 	<div class="container1">
-        <h2>Featured</h2>
+		
+       
         <div class="content">
-            <div class="post">
-                <h2>Post</h2>
-                <div class="card1">
-                    <h3>Bài đăng 1</h3>
-                    <p>Nội dung bài đăng 1...</p>
-                </div>
-                <div class="card1">
-                    <h3>Bài đăng 2</h3>
-                    <p>Nội dung bài đăng 2...</p>
-                </div>
-                <!-- Thêm các bài đăng khác tại đây -->
+            <div class="post" id="postContainer">
+				<div class="post-form" id="postForm">
+					<h2>Post</h2>
+					<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
+					<button type="button" onclick="submitPost()">Post</button>
+				</div>
             </div>
             <div class="menu">
 				<h2>Menu</h2>
@@ -44,10 +40,55 @@
 					</div>
 				</a>
 			</div>
-			
-			
         </div>
     </div>
 	<div th:include="common/user/template_user.html::footer"></div>
+
+	<script>
+		function submitPost() {
+			var postContent = $('#postContent').val();
+
+			$.ajax({
+				url: 'http://localhost:1999/api/posts',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({ content: postContent }),
+				success: function (data) {
+					populatePostData([data]);
+					// Clear the post content after submitting
+					$('#postContent').val('');
+				},
+				error: function () {
+					alert('Failed to submit post.');
+				}
+			});
+		}
+
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://localhost:1999/api/posts',
+                type: 'GET',
+                success: function (data) {
+                    populatePostData(data);
+                },
+                error: function () {
+                    alert('Failed to fetch post data.');
+                }
+            });
+
+            function populatePostData(posts) {
+                var postContainer = $('#postContainer');
+
+                // Use a for-of loop for iteration
+                for (var post of posts) {
+                    var postCard = '<div class="card1">' +
+                        '<h3>' + post.user.username + '</h3>' +
+                        '<p>' + post.content + '</p>' +
+                        '</div>';
+                    postContainer.append(postCard);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
