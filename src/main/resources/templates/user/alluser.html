@@ -27,12 +27,10 @@
 
 <script>
     $(document).ready(function () {
-        // Call the API to get the list of users
         $.ajax({
             url: 'http://localhost:1999/api/users',
             type: 'GET',
             success: function (data) {
-                // Populate the user data into the table
                 populateUserData(data);
             },
             error: function () {
