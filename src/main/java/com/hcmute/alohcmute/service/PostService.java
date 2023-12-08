@@ -2,6 +2,7 @@ package com.hcmute.alohcmute.service;
 
 import com.hcmute.alohcmute.entity.Post;
 import com.hcmute.alohcmute.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Optional;
 @Service
 public class PostService {
 
+    @Autowired
     private PostRepository postRepository;
 
     public List<Post> getAllPosts() {
@@ -21,6 +23,7 @@ public class PostService {
     }
 
     public Post createPost(Post post) {
+        // Add any business logic/validation before saving the post
         return postRepository.save(post);
     }
 
@@ -37,4 +40,5 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    // Add additional methods as needed for your business logic
 }
