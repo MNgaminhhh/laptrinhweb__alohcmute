@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_ID", nullable = false)
+    @JsonIgnore
     private User user;
 
     private String content;
@@ -28,11 +31,14 @@ public class Post {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post")
+    @JsonIgnore
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post")
+    @JsonIgnore
     private List<Image> images;
 
     @OneToMany(mappedBy = "post")
+    @JsonIgnore
     private List<Like> likes;
 }

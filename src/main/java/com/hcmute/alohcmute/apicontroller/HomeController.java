@@ -1,4 +1,4 @@
-package com.hcmute.alohcmute.controller;
+package com.hcmute.alohcmute.apicontroller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

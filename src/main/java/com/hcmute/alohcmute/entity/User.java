@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -23,34 +25,44 @@ public class User {
     private String email;
 
     private String password;
-
+    @Column(name = "is_admin", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isAdmin;
     @Column(name = "created_At")
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "user1")
+    @JsonIgnore
     private List<Friendship> friendshipsSent;
 
     @OneToMany(mappedBy = "user2")
+    @JsonIgnore
     private List<Friendship> friendshipsReceived;
 
     @OneToMany(mappedBy = "sender")
+    @JsonIgnore
     private List<Message> sentMessages;
 
     @OneToMany(mappedBy = "receiver")
+    @JsonIgnore
     private List<Message> receivedMessages;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Like> likes;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Profile profile;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Image> images;
 }

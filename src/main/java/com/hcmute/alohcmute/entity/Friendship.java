@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.alohcmute.enums.FriendshipStatus;
 
 @Data
@@ -21,10 +22,12 @@ public class Friendship {
 
     @ManyToOne
     @JoinColumn(name = "user_ID1", nullable = false)
+    @JsonIgnore
     private User user1;
 
     @ManyToOne
     @JoinColumn(name = "user_ID2", nullable = false)
+    @JsonIgnore
     private User user2;
 
     @Enumerated(EnumType.STRING)

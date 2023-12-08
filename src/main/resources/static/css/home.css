@@ -1,0 +1,8 @@
+.content{
+  display: flex;
+  gap: 50px;
+}
+
+.container1{
+  text-align: center;
+}

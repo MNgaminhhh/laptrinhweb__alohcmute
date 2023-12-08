@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -19,10 +21,12 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "user_ID", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_ID", nullable = false)
+    @JsonIgnore
     private Post post;
 
     @Column(name = "file_Path", nullable = false)

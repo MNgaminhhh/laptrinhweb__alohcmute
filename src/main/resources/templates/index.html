@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<meta charset="UTF-8">
-	<title>Insert title here</title>
+		<meta charset="UTF-8">
+		<title>User Management</title>
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<!-- Custom styles for this template -->
+		 <link th:href="@{css/home.css}" rel="stylesheet">
+		 <link th:href="@{css/style.css}" rel="stylesheet">
+		 <link th:href="@{css/footer.css}" rel="stylesheet">
 	</head>
 <body>
-	<h1>Hello</h1>
+	<div th:include="common/user/template_user.html::header"></div>
+	<div class="container1">
+        <h2>Featured</h2>
+        <div class="content">
+            <h2>post</h2>
+            <h2>menu</h2>
+        </div>
+    </div>
+	<div th:include="common/user/template_user.html::footer"></div>
 </body>
 </html>

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -19,10 +21,12 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "sender_ID", nullable = false)
+    @JsonIgnore
     private User sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_ID", nullable = false)
+    @JsonIgnore
     private User receiver;
 
     private String content;

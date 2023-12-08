@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.alohcmute.enums.LikeType;
 
 @Data
@@ -21,14 +22,17 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "user_ID", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_ID")
+    @JsonIgnore
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "comment_ID")
+    @JsonIgnore
     private Comment comment;
 
     @Enumerated(EnumType.STRING)
