@@ -15,7 +15,7 @@
 <table id="friendshipTable" border="1">
     <thead>
         <tr>
-            <th>status</th>
+            <th>friendshipId</th>
         </tr>
     </thead>
     <tbody>
@@ -27,30 +27,25 @@
     $(document).ready(function() {
         $.ajax({
             url: 'http://localhost:1999/api/friendship',
-            type: GET,
+            type: 'GET',
             success: function (data) {
-                // Populate the user data into the table
                 populateFriendship(data);
             },
             error: function () {
                 alert('Failed to fetch user data.');
             }
         })
-
         function populateFriendship(data) {
             var tableBody = $('#friendshipTable tbody');
-
-            // Clear existing rows
             tableBody.empty();
-
-            // Use a for-of loop for iteration
-            for (var user of users) {
+            for (var user of data) {  
                 var row = '<tr>' +
-                    '<td>' + data.status + '</td>' +
+                    '<td>' + user.friendshipId + '</td>' +
                     '</tr>';
                 tableBody.append(row);
             }
         }
+
     })
 </script>
 <div th:include="common/user/template_user.html::footer"></div>
