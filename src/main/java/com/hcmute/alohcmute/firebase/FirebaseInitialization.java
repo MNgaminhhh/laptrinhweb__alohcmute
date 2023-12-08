@@ -10,7 +10,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
 public class FirebaseInitialization {
-
     public void initialization() {
         try {
             ClassPathResource resource = new ClassPathResource("serviceAccountKey.json");
