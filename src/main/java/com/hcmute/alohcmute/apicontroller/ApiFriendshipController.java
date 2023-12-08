@@ -25,4 +25,5 @@ public class ApiFriendshipController {
         List<Friendship> friendships = friendshipService.getAllFriendship();
         return new ResponseEntity<>(friendships, HttpStatus.OK);
     }
+    
 }

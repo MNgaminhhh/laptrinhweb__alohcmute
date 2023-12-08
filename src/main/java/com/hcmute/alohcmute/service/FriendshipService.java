@@ -10,7 +10,11 @@ import com.hcmute.alohcmute.repository.FriendshipRepository;
 @Service
 public class FriendshipService {
     
-    private FriendshipRepository friendshipRepository;
+    private final FriendshipRepository friendshipRepository;
+
+    public FriendshipService(FriendshipRepository friendshipRepository) {
+        this.friendshipRepository = friendshipRepository;
+    }
 
     public List<Friendship> getAllFriendship() {
         return friendshipRepository.findAll();
