@@ -7,9 +7,6 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hcmute.alohcmute.repository.ImageRepository;
-import com.hcmute.alohcmute.service.StorageService;
-
 @Data
 @Entity
 @AllArgsConstructor
