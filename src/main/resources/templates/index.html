@@ -8,16 +8,44 @@
 		 <link th:href="@{css/home.css}" rel="stylesheet">
 		 <link th:href="@{css/style.css}" rel="stylesheet">
 		 <link th:href="@{css/footer.css}" rel="stylesheet">
-		 <script type="module" src="/public/firebase-config.js"></script>
-		 
 	</head>
 <body>
 	<div th:include="common/user/template_user.html::header"></div>
 	<div class="container1">
         <h2>Featured</h2>
         <div class="content">
-            <h2>post</h2>
-            <h2>menu</h2>
+            <div class="post">
+                <h2>Post</h2>
+                <div class="card1">
+                    <h3>Bài đăng 1</h3>
+                    <p>Nội dung bài đăng 1...</p>
+                </div>
+                <div class="card1">
+                    <h3>Bài đăng 2</h3>
+                    <p>Nội dung bài đăng 2...</p>
+                </div>
+                <!-- Thêm các bài đăng khác tại đây -->
+            </div>
+            <div class="menu">
+				<h2>Menu</h2>
+				<a href="trangchu.html">
+					<div class="card">
+						<h3>Trang chủ</h3>
+					</div>
+				</a>
+				<a href="tinnhan.html">
+					<div class="card">
+						<h3>Tin nhắn</h3>
+					</div>
+				</a>
+				<a href="trangcanhan.html">
+					<div class="card">
+						<h3>Trang cá nhân</h3>
+					</div>
+				</a>
+			</div>
+			
+			
         </div>
     </div>
 	<div th:include="common/user/template_user.html::footer"></div>
