@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.alohcmute.enums.LikeType;
 
@@ -27,7 +28,7 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "post_ID")
-    @JsonIgnore
+    @JsonBackReference
     private Post post;
 
     @ManyToOne

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 @Data
 @Entity
 @AllArgsConstructor
@@ -17,6 +19,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_ID", nullable = false)
+    @JsonBackReference
     private Post post;
 
     @ManyToOne
