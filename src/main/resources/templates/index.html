@@ -1,68 +1,74 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>User Management</title>
-		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-		<!-- Custom styles for this template -->
-		 <link th:href="@{css/home.css}" rel="stylesheet">
-		 <link th:href="@{css/style.css}" rel="stylesheet">
-		 <link th:href="@{css/footer.css}" rel="stylesheet">
-	</head>
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link th:href="@{css/home.css}" rel="stylesheet">
+    <link th:href="@{css/style.css}" rel="stylesheet">
+    <link th:href="@{css/footer.css}" rel="stylesheet">
+</head>
 <body>
-	<div th:include="common/user/template_user.html::header"></div>
-	<div class="container1">
-		
-       
+    <div th:include="common/user/template_user.html::header"></div>
+    <div class="container1">
         <div class="content">
             <div class="post" id="postContainer">
-				<div class="post-form" id="postForm">
-					<h2>Post</h2>
-					<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-					<button type="button" onclick="submitPost()">Post</button>
-				</div>
+                <div class="post-form" id="postForm">
+                    <h2>Post</h2>
+                    <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
+                    <input type="file" id="postImage" accept="image/*">
+                    <button type="button" onclick="submitPost()">Post</button>
+                </div>
             </div>
             <div class="menu">
-				<h2>Menu</h2>
-				<a href="trangchu.html">
-					<div class="card">
-						<h3>Trang chủ</h3>
-					</div>
-				</a>
-				<a href="tinnhan.html">
-					<div class="card">
-						<h3>Tin nhắn</h3>
-					</div>
-				</a>
-				<a href="trangcanhan.html">
-					<div class="card">
-						<h3>Trang cá nhân</h3>
-					</div>
-				</a>
-			</div>
+                <h2>Menu</h2>
+                <a href="trangchu.html">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <a href="tinnhan.html">
+                    <div class="card">
+                        <h3>Tin nhắn</h3>
+                    </div>
+                </a>
+                <a href="trangcanhan.html">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-	<div th:include="common/user/template_user.html::footer"></div>
+    <div th:include="common/user/template_user.html::footer"></div>
 
-	<script>
-		function submitPost() {
-			var postContent = $('#postContent').val();
+    <script>
+        function submitPost() {
+            var postContent = $('#postContent').val();
+            var postImage = $('#postImage')[0].files[0];
 
-			$.ajax({
-				url: 'http://localhost:1999/api/posts',
-				type: 'POST',
-				contentType: 'application/json',
-				data: JSON.stringify({ content: postContent }),
-				success: function (data) {
-					populatePostData([data]);
-					// Clear the post content after submitting
-					$('#postContent').val('');
-				},
-				error: function () {
-					alert('Failed to submit post.');
-				}
-			});
-		}
+            var formData = new FormData();
+            formData.append('content', postContent);
+            formData.append('image', postImage);
+
+            $.ajax({
+                url: 'http://localhost:1999/api/posts',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    populatePostData([data]);
+                    // Clear the post content and image after submitting
+                    $('#postContent').val('');
+                    $('#postImage').val('');
+                },
+                error: function () {
+                    alert('Failed to submit post.');
+                }
+            });
+        }
 
         $(document).ready(function () {
             $.ajax({
@@ -79,14 +85,30 @@
             function populatePostData(posts) {
                 var postContainer = $('#postContainer');
 
-                // Use a for-of loop for iteration
                 for (var post of posts) {
                     var postCard = '<div class="card1">' +
                         '<h3>' + post.user.username + '</h3>' +
-                        '<p>' + post.content + '</p>' +
+                        '<p>Email: ' + post.user.email + '</p>' +
+                        '<p>Post ID: ' + post.postId + '</p>' +
+                        '<p>Content: ' + post.content + '</p>' +
+                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<img src="' + post.images[0].filePath + '" alt="Post Image">' + // Assuming there's only one image per post
+                        '<button type="button" onclick="likePost(' + post.postId + ')">Like ' + post.postId + '</button>' +
+                        '<button type="button" onclick="showComments(' + post.postId + ')">View Comments</button>' +
                         '</div>';
+
                     postContainer.append(postCard);
                 }
+            }
+
+            function likePost(postId) {
+                // Implement your like functionality here
+                console.log('Liked post with ID: ' + postId);
+            }
+
+            function showComments(postId) {
+                // Implement your comment display functionality here
+                alert('Show comments for post with ID: ' + postId);
             }
         });
     </script>
