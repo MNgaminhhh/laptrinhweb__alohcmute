@@ -89,7 +89,7 @@
 		}
 		
 		function removeUploadedImage() {
-			$('#uploadImageLabel').css('background-image', ''); // Remove the background image
+			$('#uploadImageLabel').css('background-image', '');
 			$('#uploadImage').val(''); // Clear the file input
 		}
 		
@@ -135,7 +135,6 @@
                 data: formData,
                 success: function (data) {
                     populatePostData([data]);
-                    // Clear the post content and image after submitting
                     $('#postContent').val('');
                     $('#postImage').val('');
                     removeUploadedImage();
@@ -169,7 +168,7 @@
                         '<p>Content: ' + post.content + '</p>' +
                         '<p>Created At: ' + post.createdAt + '</p>' +
                         '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like</button>' +
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
                         '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
                         '</a>';
         

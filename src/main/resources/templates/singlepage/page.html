@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Trang Chủ | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link th:href="@{../css/home.css}" rel="stylesheet">
+    <link th:href="@{../css/singlepage.css}" rel="stylesheet">
     <link th:href="@{../css/style.css}" rel="stylesheet">
     <link th:href="@{../css/footer.css}" rel="stylesheet">
 </head>
@@ -14,7 +14,17 @@
     <div th:include="common/user/template_user.html::header"></div>
     <div class="container1">
         <div class="content">
-            <div class="post" id="postContainer">
+            <div class="post">
+                <div id="postContainer">
+                </div>
+                <div id="commentsSection" style="display: none;">
+                    <h2>Comments</h2>
+                    <div id="commentForm">
+                    <div id="commentList"></div>
+                        <textarea id="newComment" placeholder="Add a comment"></textarea>
+                        <button type="button" id="addCommentBtn">Add Comment</button>
+                    </div>
+                </div>
             </div>
             <div class="menu">
                 <h2>Menu</h2>
@@ -35,10 +45,6 @@
                 </a>
             </div>
         </div>
-        <div id="commentsSection" style="display: none;">
-            <h2>Comments</h2>
-            <div id="commentList"></div>
-        </div>
     </div>
     <div th:include="common/user/template_user.html::footer"></div>
 
@@ -47,6 +53,7 @@
             var postIdToDisplay = window.location.pathname.split('/').pop();
             var commentSection = $('#commentsSection');
             var commentList = $('#commentList');
+            var commentForm = $('#commentForm');
             var postContainer = $('#postContainer');
             var commentsVisible = false;
 
@@ -73,17 +80,17 @@
                     '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
                     '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
                     '</div>';
-                displayComments(post.comments);
                 postContainer.append(postCard);
                 $('.like-button').click(function () {
                     var postId = $(this).data('post-id');
                     likePost(postId);
                 });
-
+                
                 $('.comment-button').click(function () {
                     var postId = $(this).data('post-id');
                     toggleComments(postId);
                 });
+                displayComments(post.comments);
             }
 
             function displayComments(comments) {
