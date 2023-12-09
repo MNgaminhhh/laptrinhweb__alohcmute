@@ -1,29 +1,50 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <title>User Management</title>
+    <title>Trang Chủ | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- Custom styles for this template -->
     <link th:href="@{css/home.css}" rel="stylesheet">
     <link th:href="@{css/style.css}" rel="stylesheet">
     <link th:href="@{css/footer.css}" rel="stylesheet">
 </head>
+
 <body>
     <div th:include="common/user/template_user.html::header"></div>
     <div class="container1">
         <div class="content">
+
             <div class="post" id="postContainer">
+
                 <div class="post-form" id="postForm">
-                    <h2>Post</h2>
-                    <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-                    <input type="file" id="postImage" accept="image/*">
-                    <button type="button" onclick="submitPost()">Post</button>
+                    <div class="card">
+						<h2>Post</h2>
+						<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
+					
+						<div class="image-preview" id="imagePreview">
+							<label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+								Drag and drop image here or click to upload
+							</label>
+							<input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+						</div>
+						
+						
+						<br>
+						<button type="button" onclick="removeUploadedImage()">Remove Image</button>
+						<button type="button" onclick="uploadImage()">Upload Image</button>
+						<br>
+						<button type="button" onclick="submitPost()">Post</button>
+					</div>
+					
+					
                 </div>
+
             </div>
             <div class="menu">
                 <h2>Menu</h2>
-                <a href="trangchu.html">
+                <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
                     </div>
@@ -44,6 +65,62 @@
     <div th:include="common/user/template_user.html::footer"></div>
 
     <script>
+		function handleFileSelect(event) {
+			event.preventDefault();
+			var files = event.target.files || event.dataTransfer.files;
+		
+			if (files.length > 0) {
+				displayImageInLabel(files[0]);
+			}
+		}
+		
+		function handleDragOver(event) {
+			event.preventDefault();
+			$('#uploadImageLabel').addClass('drag-over');
+		}
+		
+		function displayImageInLabel(file) {
+			var reader = new FileReader();
+		
+			reader.onload = function (e) {
+				$('#uploadImageLabel').css('background-image', 'url(' + e.target.result + ')');
+				$('#uploadImageLabel').removeClass('drag-over');
+			};
+		
+			reader.readAsDataURL(file);
+		}
+		
+		function removeUploadedImage() {
+			$('#uploadImageLabel').css('background-image', ''); // Remove the background image
+			$('#uploadImage').val(''); // Clear the file input
+		}
+		
+        function uploadImage() {
+            var imageInput = $('#uploadImage')[0].files[0];
+            var formData = new FormData();
+            formData.append('file', imageInput);
+
+            $.ajax({
+                url: 'http://localhost:1999/api/upload',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    alert('Image uploaded successfully. Image URL: ' + data);
+                    displayImage(data);
+                },
+                error: function () {
+                    alert('Failed to upload image.');
+                }
+            });
+        }
+
+        function displayImage(imageUrl) {
+            $('#uploadedImage').attr('src', imageUrl);
+            $('#uploadedImage').show();
+        }
+
         function submitPost() {
             var postContent = $('#postContent').val();
             var postImage = $('#postImage')[0].files[0];
@@ -63,6 +140,7 @@
                     // Clear the post content and image after submitting
                     $('#postContent').val('');
                     $('#postImage').val('');
+                    removeUploadedImage();
                 },
                 error: function () {
                     alert('Failed to submit post.');
@@ -113,4 +191,5 @@
         });
     </script>
 </body>
+
 </html>
