@@ -1,6 +1,7 @@
 package com.hcmute.alohcmute.service;
 import com.hcmute.alohcmute.entity.User;
 import com.hcmute.alohcmute.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,5 +31,11 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    // Các phương thức khác tương tự có thể được thêm vào tùy theo yêu cầu kinh doanh
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    public Optional<User> getUserByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }
