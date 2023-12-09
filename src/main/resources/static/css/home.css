@@ -30,6 +30,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center; 
+  object-fit: cover;
   cursor: pointer;
   width: 500px;
   height: 500px;

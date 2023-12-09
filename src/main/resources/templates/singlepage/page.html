@@ -11,30 +11,10 @@
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <div class="wrapper">
-                <div class="right">
-                    <a href="/"><img th:src="@{/images/logo.png}" width="155" height="70" class="img" alt=""></a>
-                </div>
-                <div class="left">
-                </div>
-                <div class="rightHeader">
-                    <a href="/" class="link">Trang Chủ</a>
-                    <a href="/contact" class="link">Liên Hệ</a>
-                    <ThemeToggle></ThemeToggle>
-                    <AuthLink></AuthLink>
-                </div>
-            </div>
-        </div>
-    </header>
+    <div th:include="common/user/template_user.html::header"></div>
     <div class="container1">
         <div class="content">
-
             <div class="post" id="postContainer">
-
-                
-
             </div>
             <div class="menu">
                 <h2>Menu</h2>
@@ -55,29 +35,20 @@
                 </a>
             </div>
         </div>
+        <div id="commentsSection" style="display: none;">
+            <h2>Comments</h2>
+            <div id="commentList"></div>
+        </div>
     </div>
-    <footer>
-        <div class="containerfooter">
-            <div class="footer">
-                <div class="wrappeer">
-                    <div class="col">
-                        <h2>Về Alohcmute</h2>
-                        <p>Chào mừng bạn đến với Alohcmute - nền tảng chia sẻ và kết nối cộng đồng. Tại đây, chúng ta cùng nhau trải nghiệm, chia sẻ và tạo ra những khoảnh khắc đáng nhớ. Dù ở bất kỳ đâu, chúng ta luôn gần kề nhau thông qua Alohcmute.</p>
-                    </div>
-                    <div class="col">
-                        <h2>Liên Hệ</h2>
-                        <span>Email: your_email@example.com</span>
-                        <span>Điện thoại: +123-456-7890</span>
-                    </div>
-                </div>
-                <p>© 2023 Alohcmute. All Rights Reserved.</p>
-            </div>
-        </div> 
-    </footer>
+    <div th:include="common/user/template_user.html::footer"></div>
 
     <script>
-		$(document).ready(function () {
+        $(document).ready(function () {
             var postIdToDisplay = window.location.pathname.split('/').pop();
+            var commentSection = $('#commentsSection');
+            var commentList = $('#commentList');
+            var postContainer = $('#postContainer');
+            var commentsVisible = false;
 
             $.ajax({
                 url: 'http://localhost:1999/api/posts/' + postIdToDisplay,
@@ -85,13 +56,13 @@
                 success: function (data) {
                     displaySinglePost(data);
                 },
-                
                 error: function () {
                     alert('Failed to fetch post data.');
                 }
             });
+
             function displaySinglePost(post) {
-                var postContainer = $('#postContainer');
+                document.title = post.content + " | ALOHCMUTE";
                 var postCard = '<div class="card1">' +
                     '<h3>' + post.user.username + '</h3>' +
                     '<p>Email: ' + post.user.email + '</p>' +
@@ -99,10 +70,10 @@
                     '<p>Content: ' + post.content + '</p>' +
                     '<p>Created At: ' + post.createdAt + '</p>' +
                     '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like</button>' +
+                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
                     '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
                     '</div>';
-
+                displayComments(post.comments);
                 postContainer.append(postCard);
                 $('.like-button').click(function () {
                     var postId = $(this).data('post-id');
@@ -111,18 +82,39 @@
 
                 $('.comment-button').click(function () {
                     var postId = $(this).data('post-id');
-                    showComments(postId);
+                    toggleComments(postId);
                 });
             }
+
+            function displayComments(comments) {
+                commentList.empty();
+
+                comments.forEach(function (comment) {
+                    var commentItem = '<div class="comment-item">' +
+                        '<p>Comment ID: ' + comment.commentId + '</p>' +
+                        '<p>Username: ' + comment.user.username + '</p>' +
+                        '<p>Email: ' + comment.user.email + '</p>' +
+                        '<p>Content: ' + comment.content + '</p>' +
+                        '<p>Created At: ' + comment.createdAt + '</p>' +
+                        '</div>';
+
+                    commentList.append(commentItem);
+                });
+            }
+
             function likePost(postId) {
                 console.log('Liked post with ID: ' + postId);
             }
-            function showComments(postId) {
-                alert('Show comments for post with ID: ' + postId);
+
+            function toggleComments(postId) {
+                if (commentsVisible) {
+                    commentSection.hide();
+                } else {
+                    commentSection.show();
+                }
+                commentsVisible = !commentsVisible;
             }
         });
-        
-        
     </script>
 </body>
 
