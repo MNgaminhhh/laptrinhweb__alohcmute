@@ -19,4 +19,5 @@ public class FriendshipService {
     public List<Friendship> getAllFriendship() {
         return friendshipRepository.findAll();
     }
+
 }
