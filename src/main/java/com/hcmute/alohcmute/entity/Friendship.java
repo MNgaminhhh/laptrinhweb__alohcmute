@@ -22,12 +22,10 @@ public class Friendship {
 
     @ManyToOne
     @JoinColumn(name = "user_ID1", nullable = false)
-    @JsonIgnore
     private User user1;
 
     @ManyToOne
     @JoinColumn(name = "user_ID2", nullable = false)
-    @JsonIgnore
     private User user2;
 
     @Enumerated(EnumType.STRING)
