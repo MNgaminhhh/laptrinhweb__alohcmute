@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <title>Trang Chủ | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <!-- Custom styles for this template -->
     <link th:href="@{css/home.css}" rel="stylesheet">
     <link th:href="@{css/style.css}" rel="stylesheet">
     <link th:href="@{css/footer.css}" rel="stylesheet">
 </head>
 
 <body>
-    <div th:include="common/user/template_user.html::header"></div>
+    <div th:insert="common/user/template_user.html::header"></div>
     <div class="container1">
         <div class="content">
 
@@ -62,8 +61,7 @@
             </div>
         </div>
     </div>
-    <div th:include="common/user/template_user.html::footer"></div>
-
+    <div th:insert="common/user/template_user.html::footer"></div>
     <script>
 		function handleFileSelect(event) {
 			event.preventDefault();
@@ -159,36 +157,40 @@
                     alert('Failed to fetch post data.');
                 }
             });
-
+        
             function populatePostData(posts) {
                 var postContainer = $('#postContainer');
-
+        
                 for (var post of posts) {
-                    var postCard = '<div class="card1">' +
+                    var postCard = '<a href="http://localhost:1999/post/' + post.postId + '" class="card1">' +
                         '<h3>' + post.user.username + '</h3>' +
                         '<p>Email: ' + post.user.email + '</p>' +
                         '<p>Post ID: ' + post.postId + '</p>' +
                         '<p>Content: ' + post.content + '</p>' +
                         '<p>Created At: ' + post.createdAt + '</p>' +
-                        '<img src="' + post.images[0].filePath + '" alt="Post Image">' + // Assuming there's only one image per post
-                        '<button type="button" onclick="likePost(' + post.postId + ')">Like ' + post.postId + '</button>' +
-                        '<button type="button" onclick="showComments(' + post.postId + ')">View Comments</button>' +
-                        '</div>';
-
+                        '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
+                        '</a>';
+        
                     postContainer.append(postCard);
                 }
+        
+                $('.like-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    likePost(postId);
+                });
+        
+                $('.comment-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    showComments(postId);
+                });
             }
-
-            function likePost(postId) {
-                // Implement your like functionality here
-                console.log('Liked post with ID: ' + postId);
-            }
-
-            function showComments(postId) {
-                // Implement your comment display functionality here
-                alert('Show comments for post with ID: ' + postId);
-            }
+        
+           
         });
+        
+        
     </script>
 </body>
 
