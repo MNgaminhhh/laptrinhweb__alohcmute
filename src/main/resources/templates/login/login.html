@@ -10,7 +10,7 @@
     <link th:href="@{css/footer.css}" rel="stylesheet">
 </head>
 <body>
-    <div th:include="common/user/template_user.html::header"></div>
+    <div th:insert="~{common/user/template_user.html::header}"></div>
     <div th:if="${param.error}">
         Invalid username or password.
     </div>
@@ -22,6 +22,9 @@
         <div><label>Password: <input type="password" id="password" name="password" /> </label></div>
         <div><button type="button" onclick="loginUser()">Sign In</button></div>
     </form>
+
+    <!-- Add the registration button -->
+    <div><button type="button" onclick="redirectToRegister()">Register</button></div>
 
     <script th:inline="javascript">
         function loginUser() {
@@ -44,8 +47,13 @@
             });
             return false;
         }
+
+        // Function to redirect to the registration page
+        function redirectToRegister() {
+            window.location.href = '/register';
+        }
     </script>
 
-    <div th:include="common/user/template_user.html::footer"></div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
 </body>
 </html>

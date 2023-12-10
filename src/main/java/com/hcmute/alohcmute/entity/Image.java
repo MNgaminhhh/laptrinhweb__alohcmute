@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Data
 @Entity
 @AllArgsConstructor
@@ -34,4 +33,5 @@ public class Image {
 
     @Column(name = "created_At")
     private LocalDateTime createdAt;
+
 }
