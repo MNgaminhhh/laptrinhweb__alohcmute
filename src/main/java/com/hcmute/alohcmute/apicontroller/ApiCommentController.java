@@ -22,9 +22,8 @@ public class ApiCommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getCommentByID(@PathVariable Long commentId) {
+    public ResponseEntity<Comment> getCommentById(@PathVariable Long commentId) {
         Optional<Comment> comment = commentService.getCommentById(commentId);
         return comment.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
