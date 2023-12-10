@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>User Management</title>
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<!-- Custom styles for this template -->
+		 <link th:href="@{css/home.css}" rel="stylesheet">
+		 <link th:href="@{css/style.css}" rel="stylesheet">
+		 <link th:href="@{css/footer.css}" rel="stylesheet">
+         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	</head>
+<body>
+    <div th:include="common/user/template_user.html::header"></div>
+        <divv class="card mb-3" style="max-width: 100%; height: 300px;">
+            <div class="row g-1">
+                <div class="col-md-2">
+                <img src="../../static/images/logo.png" class="img-fluid rounded-start" alt="avatar">
+                </div>
+                <div class="col-md-8">
+                <div class="card-body">
+                    <h1 class="card-title">Mai Tấn Tài</h1>
+                    <p class="card-text">Introduce yourself</p>
+                    <p class="card-text"><small class="text-body-secondary">300 bạn bè.</small></p>
+                </div>
+                </div>
+            </div>
+            </div>
+        </di>
+    </div>
+    <div th:include="common/user/template_user.html::footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	<script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/1',
+                type: 'GET',
+                success: function(data) {
+                    
+                },
+                error: function() {
+                    alert("Faild to get user profile");
+                }
+            });
+            function PopulateProfileData(data) {
+                
+            }
+        })
+    </script>
+</body>
+</html>
