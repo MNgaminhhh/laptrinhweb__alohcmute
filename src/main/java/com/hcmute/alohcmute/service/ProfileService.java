@@ -1,5 +1,6 @@
 package com.hcmute.alohcmute.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ public class ProfileService {
     private ProfileRepository profileRespository;
     public ProfileService(ProfileRepository profileRepository) {
         this.profileRespository = profileRepository;
+    }
+
+    public List<Profile> getNameOfUser() {
+        return profileRespository.findNameOfUser();
     }
 
     public Optional<Profile> getProfileUser(Long userID) {

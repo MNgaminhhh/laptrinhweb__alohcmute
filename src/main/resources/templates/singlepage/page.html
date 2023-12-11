@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link th:href="@{../css/singlepage.css}" rel="stylesheet">
+    <link th:href="@{../css/style.css}" rel="stylesheet">
+    <link th:href="@{../css/footer.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div th:include="common/user/template_user.html::header"></div>
+    <div class="container1">
+        <div class="content">
+            <div class="post">
+                <div id="postContainer">
+                </div>
+                <div id="commentsSection" style="display: none;">
+                    <h2>Comments</h2>
+                    <div id="commentForm">
+                    <div id="commentList"></div>
+                        <textarea id="newComment" placeholder="Add a comment"></textarea>
+                        <button type="button" id="addCommentBtn">Add Comment</button>
+                    </div>
+                </div>
+            </div>
+            <div class="menu">
+                <h2>Menu</h2>
+                <a href="/">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <a href="tinnhan.html">
+                    <div class="card">
+                        <h3>Tin nhắn</h3>
+                    </div>
+                </a>
+                <a href="trangcanhan.html">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div th:include="common/user/template_user.html::footer"></div>
+
+    <script>
+        $(document).ready(function () {
+            var postIdToDisplay = window.location.pathname.split('/').pop();
+            var commentSection = $('#commentsSection');
+            var commentList = $('#commentList');
+            var commentForm = $('#commentForm');
+            var postContainer = $('#postContainer');
+            var commentsVisible = false;
+
+            $.ajax({
+                url: 'http://localhost:1999/api/posts/' + postIdToDisplay,
+                type: 'GET',
+                success: function (data) {
+                    displaySinglePost(data);
+                },
+                error: function () {
+                    alert('Failed to fetch post data.');
+                }
+            });
+
+            function displaySinglePost(post) {
+                document.title = post.content + " | ALOHCMUTE";
+                var postCard = '<div class="card1">' +
+                    '<h3>' + post.user.username + '</h3>' +
+                    '<p>Email: ' + post.user.email + '</p>' +
+                    '<p>Post ID: ' + post.postId + '</p>' +
+                    '<p>Content: ' + post.content + '</p>' +
+                    '<p>Created At: ' + post.createdAt + '</p>' +
+                    '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
+                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
+                    '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
+                    '</div>';
+                postContainer.append(postCard);
+                $('.like-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    likePost(postId);
+                });
+                
+                $('.comment-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    toggleComments(postId);
+                });
+                displayComments(post.comments);
+            }
+
+            function displayComments(comments) {
+                commentList.empty();
+
+                comments.forEach(function (comment) {
+                    var commentItem = '<div class="comment-item">' +
+                        '<p>Comment ID: ' + comment.commentId + '</p>' +
+                        '<p>Username: ' + comment.user.username + '</p>' +
+                        '<p>Email: ' + comment.user.email + '</p>' +
+                        '<p>Content: ' + comment.content + '</p>' +
+                        '<p>Created At: ' + comment.createdAt + '</p>' +
+                        '</div>';
+
+                    commentList.append(commentItem);
+                });
+            }
+
+            function likePost(postId) {
+                console.log('Liked post with ID: ' + postId);
+            }
+
+            function toggleComments(postId) {
+                if (commentsVisible) {
+                    commentSection.hide();
+                } else {
+                    commentSection.show();
+                }
+                commentsVisible = !commentsVisible;
+            }
+        });
+    </script>
+</body>
+
+</html>

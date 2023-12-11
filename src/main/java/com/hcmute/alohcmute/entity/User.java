@@ -25,8 +25,8 @@ public class User {
     private String email;
 
     private String password;
-    @Column(name = "is_admin", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isAdmin;
+    @Column(name = "is_admin", columnDefinition = "String DEFAULT 'USER'")
+    private String isAdmin;
     @Column(name = "created_At")
     private LocalDateTime createdAt;
 

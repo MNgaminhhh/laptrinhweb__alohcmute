@@ -1,5 +1,6 @@
 package com.hcmute.alohcmute.apicontroller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class ApiProfileController {
         this.profileService = profileService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<Profile>> getNameOfUser() {
+        List<Profile> profiles = profileService.getNameOfUser();
+        return new ResponseEntity<>(profiles, HttpStatus.OK);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<Profile> getUserById(@PathVariable Long userId) {
         Optional<Profile> profile = profileService.getProfileUser(userId);
@@ -50,4 +57,5 @@ public class ApiProfileController {
         Profile newProfile = profileService.eidtProfile(userId, profile);
         return new ResponseEntity<>(newProfile, HttpStatus.CREATED);
     }
+
 }

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.alohcmute.enums.Gender;
 
 @Data
@@ -22,7 +21,6 @@ public class Profile {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_ID")
-    @JsonIgnore
     private User user;
 
     @Column(name = "first_Name")
