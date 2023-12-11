@@ -19,7 +19,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
-
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

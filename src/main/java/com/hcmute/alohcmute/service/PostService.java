@@ -1,6 +1,8 @@
 package com.hcmute.alohcmute.service;
 
+import com.hcmute.alohcmute.entity.Image;
 import com.hcmute.alohcmute.entity.Post;
+import com.hcmute.alohcmute.repository.ImageRepository;
 import com.hcmute.alohcmute.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,8 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
-
+    @Autowired
+    private ImageRepository imageRepository;
     public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
@@ -21,9 +24,10 @@ public class PostService {
     public Optional<Post> getPostById(Long postId) {
         return postRepository.findById(postId);
     }
-
+    public void saveImage(Image image) {
+        imageRepository.save(image);
+    }
     public Post createPost(Post post) {
-        // Add any business logic/validation before saving the post
         return postRepository.save(post);
     }
 
@@ -39,6 +43,4 @@ public class PostService {
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
-
-    // Add additional methods as needed for your business logic
 }

@@ -1,5 +1,4 @@
 package com.hcmute.alohcmute.controllers;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,4 +10,5 @@ public class PostController {
     public String showSinglePost(@PathVariable Long postId, Model model) {
         return "singlepage/page";
     }
+    
 }

@@ -50,6 +50,7 @@
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
                         <h2>User Information</h2>
                         <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Id: <span th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
                 <h2>Menu</h2>
@@ -139,7 +140,7 @@
             formData.append('image', postImage);
 
             $.ajax({
-                url: 'http://localhost:1999/api/posts',
+                url: 'http://localhost:1999/api/posts/createWithImage',
                 type: 'POST',
                 processData: false,
                 contentType: false,
