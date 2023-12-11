@@ -29,8 +29,6 @@
         <p id="errorMessage" style="color: red;"></p>
     </form>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
-
-    <!-- Add JavaScript for AJAX -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         function registerUser() {
@@ -45,11 +43,14 @@
                 return;
             }
 
+            var now = new Date();
+            var createdAt = now.toISOString();
+
             var userInfo = {
                 "username": username,
                 "email": email,
-                "password": password
-            };
+                "password": password,
+                "createdAt": createdAt
 
             $.ajax({
                 type: "POST",
@@ -66,5 +67,6 @@
         }
         /*]]>*/
     </script>
+
 </body>
 </html>
