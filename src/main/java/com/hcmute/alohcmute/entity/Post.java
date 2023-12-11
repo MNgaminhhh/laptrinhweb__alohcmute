@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Data
 @Entity
@@ -30,14 +29,13 @@ public class Post {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post")
-    @JsonIgnore
     private List<Image> images;
 
     @OneToMany(mappedBy = "post")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Like> likes;
 }

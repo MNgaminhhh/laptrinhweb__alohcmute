@@ -15,18 +15,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                // .authorizeHttpRequests()
-                // .requestMatchers("user/alluser", "/css/**", "/images/**").permitAll()
-                // .and()
-                // .authorizeHttpRequests().requestMatchers("/api/**")
-                // .authenticated().and()
-                // .formLogin().loginPage("/login")
-                // .successForwardUrl("/alluser")
-                // .permitAll()
-                // .and()
+                .authorizeHttpRequests()
+                .requestMatchers("/", "/css/**", "/images/**", "/register","/api/posts","/api/login").permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .and()
+                .formLogin().loginPage("/login")
+                .successForwardUrl("/alluser")
+                .permitAll()
+                .and()
                 .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
