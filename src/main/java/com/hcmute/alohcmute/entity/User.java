@@ -25,7 +25,8 @@ public class User {
     private String email;
 
     private String password;
-    @Column(name = "is_admin", columnDefinition = "String DEFAULT 'USER'")
+    
+    @Column(name = "is_admin", columnDefinition = "String DEFAULT 'ROLE_USER'")
     private String isAdmin;
     @Column(name = "created_At")
     private LocalDateTime createdAt;

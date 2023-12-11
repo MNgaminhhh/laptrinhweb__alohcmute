@@ -43,6 +43,15 @@
             </div>
             <div class="menu">
                 <h2>Menu</h2>
+                <div sec:authorize="hasRole('ROLE_USER')">
+                    This content is only shown to users.
+                  </div>
+                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                    This content is only shown to users.
+                  </div>
+                  Logged user: <span sec:authentication="name">Bob</span>
+                  <span sec:authentication="name"></span>
+                  Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
                 <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
