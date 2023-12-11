@@ -26,6 +26,7 @@
         <input type="password" id="confirmPassword" name="confirmPassword" required>
         <br>
         <button type="button" onclick="registerUser()">Register</button>
+        <p id="errorMessage" style="color: red;"></p>
     </form>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
 
@@ -40,7 +41,7 @@
 
             // Check if passwords match
             if (password !== confirmPassword) {
-                alert("Passwords do not match");
+                $("#errorMessage").text("Passwords do not match");
                 return;
             }
 
@@ -59,7 +60,7 @@
                     alert("User registered successfully");
                 },
                 error: function (error) {
-                    alert("Error registering user");
+                    $("#errorMessage").text("Error registering user: " + error.responseJSON.message);
                 }
             });
         }

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hcmute.alohcmute.enums.IsAdmin;
 
 @Data
 @Entity
@@ -26,8 +27,8 @@ public class User {
 
     private String password;
     
-    @Column(name = "is_admin", columnDefinition = "VARCHAR(255) DEFAULT 'ROLE_USER'")
-    private String isAdmin;
+    @Column(name = "is_admin")
+    private String isAdmin = "ROLE_USER";
 
     @Column(name = "created_At")
     private LocalDateTime createdAt;

@@ -31,6 +31,7 @@ public class ApiLoginController {
     @PostMapping("/addNewUser") 
     public String addNewUser(@RequestBody User userInfo) { 
         return service.addUser(userInfo); 
+        
     } 
     @PostMapping("/generateToken")
     public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {

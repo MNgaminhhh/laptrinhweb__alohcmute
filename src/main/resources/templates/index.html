@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +13,7 @@
 </head>
 
 <body>
-    <div th:insert="common/user/template_user.html::header"></div>
+    <div th:insert="~{common/user/template_user.html::header}"></div>
     <div class="container1">
         <div class="content">
 
@@ -43,15 +45,10 @@
             </div>
             <div class="menu">
                 <h2>Menu</h2>
-                <div sec:authorize="hasRole('ROLE_USER')">
-                    This content is only shown to users.
-                  </div>
-                <div sec:authorize="hasRole('ROLE_ADMIN')">
-                    This content is only shown to users.
-                  </div>
-                  Logged user: <span sec:authentication="name">Bob</span>
-                  <span sec:authentication="name"></span>
-                  Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
+                <div div sec:authorize="isAuthenticated()">
+                    <p>Logged user: <span sec:authentication="name"> </span></p>
+                    <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
+                </div>
                 <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
@@ -70,7 +67,7 @@
             </div>
         </div>
     </div>
-    <div th:insert="common/user/template_user.html::footer"></div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
     <script>
 		function handleFileSelect(event) {
 			event.preventDefault();
