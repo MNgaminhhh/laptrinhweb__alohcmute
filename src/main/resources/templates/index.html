@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
     <meta charset="UTF-8">
@@ -13,65 +15,67 @@
 </head>
 
 <body>
-    <div th:insert="common/user/template_user.html::header"></div>
-    <div th:insert="common/user/template_user.html :: user-left"></div>
-    <section>
-        <div class="container1">
-            <div class="content">
-    
-                <div class="post" id="postContainer">
-    
-                    <div class="post-form" id="postForm">
-                        <div class="card">
-                            <h2>Post</h2>
-                            <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-                        
-                            <div class="image-preview" id="imagePreview">
-                                <label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
-                                    Drag and drop image here or click to upload
-                                </label>
-                                <input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-                            </div>
-                            
-                            
-                            <br>
-                            <button type="button" onclick="removeUploadedImage()">Remove Image</button>
-                            <button type="button" onclick="uploadImage()">Upload Image</button>
-                            <br>
-                            <button type="button" onclick="submitPost()">Post</button>
-                        </div>
-                        
-                        
-                    </div>
-    
+    <div th:insert="~{common/user/template_user.html::header}"></div>
+    <div class="container1">
+        <div class="content">
+
+            <div class="post" id="postContainer">
+
+                <div class="post-form" id="postForm">
+                    <div class="card">
+						<h2>Post</h2>
+						<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
+					
+						<div class="image-preview" id="imagePreview">
+							<label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+								Drag and drop image here or click to upload
+							</label>
+							<input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+						</div>
+						
+						
+						<br>
+						<button type="button" onclick="removeUploadedImage()">Remove Image</button>
+						<button type="button" onclick="uploadImage()">Upload Image</button>
+						<br>
+						<button type="button" onclick="submitPost()">Post</button>
+					</div>
+					
+					
                 </div>
-                <div class="menu">
-                    <h2>Menu</h2>
-                    <a href="/">
-                        <div class="card">
-                            <h3>Trang chủ</h3>
-                        </div>
-                    </a>
-                    <a href="tinnhan.html">
-                        <div class="card">
-                            <h3>Tin nhắn</h3>
-                        </div>
-                    </a>
-                    <a href="trangcanhan.html">
-                        <div class="card">
-                            <h3>Trang cá nhân</h3>
-                        </div>
-                    </a>
-                    <a href="/friendships/friend">
-                        <div class="card">
-                            <h3>Bạn bè</h3>
-                        </div>
-                    </a>
-                </div>
+
             </div>
+            <div class="menu">
+                 
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2>User Information</h2>
+                        <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Id: <span th:text="${#authentication.principal.userId}"></span></p>
+                    </div>  
+                </div>        
+                <h2>Menu</h2>
+                <a href="/">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <a href="tinnhan.html">
+                    <div class="card">
+                        <h3>Tin nhắn</h3>
+                    </div>
+                </a>
+                <a href="trangcanhan.html">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>
+            
         </div>
-    </section>
-    <div th:insert="common/user/template_user.html::footer"></div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
     <script>
 		function handleFileSelect(event) {
 			event.preventDefault();
@@ -138,7 +142,7 @@
             formData.append('image', postImage);
 
             $.ajax({
-                url: 'http://localhost:1999/api/posts',
+                url: 'http://localhost:1999/api/posts/createWithImage',
                 type: 'POST',
                 processData: false,
                 contentType: false,
