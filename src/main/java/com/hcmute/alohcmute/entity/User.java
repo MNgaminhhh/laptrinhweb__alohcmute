@@ -21,13 +21,14 @@ public class User {
 
     private String username;
 
-    @Column(unique = true)
+    @Column(unique = true) 
     private String email;
 
     private String password;
     
-    @Column(name = "is_admin", columnDefinition = "String DEFAULT 'ROLE_USER'")
+    @Column(name = "is_admin", columnDefinition = "VARCHAR(255) DEFAULT 'ROLE_USER'")
     private String isAdmin;
+
     @Column(name = "created_At")
     private LocalDateTime createdAt;
 

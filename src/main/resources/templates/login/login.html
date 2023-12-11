@@ -41,7 +41,7 @@
             var username = $('input[name="username"]').val();
             var password = $('input[name="password"]').val();
             $.ajax({
-                url: 'http://localhost:1999/auth/generateToken',
+                url: 'http://localhost:1999/api/generateToken',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({

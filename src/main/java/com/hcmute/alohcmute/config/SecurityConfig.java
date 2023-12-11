@@ -50,9 +50,9 @@ public class SecurityConfig {
 
         return http.csrf().disable() 
             .authorizeHttpRequests() 
-            .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/css/**", "/images/**", "/register","/api/posts").permitAll() 
-            .requestMatchers("/","/auth/user/**").authenticated() 
-            .requestMatchers("/auth/admin/**").authenticated() 
+            .requestMatchers("/api/addNewUser", "/api/generateToken", "/css/**", "/images/**", "/register","/api/posts","/").permitAll() 
+            .requestMatchers("/user/**").authenticated() 
+            .requestMatchers("/admin/**").authenticated() 
             .and() 
             .sessionManagement() 
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
@@ -60,7 +60,7 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider()) 
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin()
-            .loginPage("/auth/login")
+            .loginPage("/login")
             .permitAll()
             .and()
             .logout()
@@ -76,7 +76,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() { 
         return new BCryptPasswordEncoder(); 
     } 
-  
     @Bean
     public AuthenticationProvider authenticationProvider() { 
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(); 
