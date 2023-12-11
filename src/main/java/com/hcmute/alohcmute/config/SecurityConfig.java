@@ -47,20 +47,7 @@ public class SecurityConfig {
         //         .permitAll()
         //         .and()
         //         .build();
-        // return http.csrf().disable() 
-        //         .authorizeHttpRequests() 
-        //         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll() 
-        //         .and() 
-        //         .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated() 
-        //         .and() 
-        //         .authorizeHttpRequests().requestMatchers("/auth/admin/**").authenticated() 
-        //         .and() 
-        //         .sessionManagement() 
-        //         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
-        //         .and() 
-        //         .authenticationProvider(authenticationProvider()) 
-        //         .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) 
-        //         .build();
+
         return http.csrf().disable() 
             .authorizeHttpRequests() 
             .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/css/**", "/images/**", "/register","/api/posts").permitAll() 
