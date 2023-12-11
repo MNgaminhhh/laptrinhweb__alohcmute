@@ -24,6 +24,10 @@ public class FriendshipService {
         return friendshipRepository.findByStatus(status);
     }
 
+    public List<Friendship> getFriedshipOfUser(Long userId, FriendshipStatus status) {
+         return friendshipRepository.findFriendshipOfUser(userId, status);
+    }
+
     public Friendship addFriendship(Friendship friendship) {
         return friendshipRepository.save(friendship);
     }

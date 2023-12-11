@@ -39,6 +39,13 @@ public class ApiFriendshipController {
         return new ResponseEntity<>(friendships, HttpStatus.OK);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<Friendship>> getFriendshipOfUserId(
+        @RequestParam(value = "userId1") Long userId1, @RequestParam(value = "status") FriendshipStatus status){
+        List<Friendship> friendships = friendshipService.getFriedshipOfUser(userId1, status);
+        return new ResponseEntity<>(friendships, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Friendship> addFriendship(@RequestBody Friendship friendship) {
         Friendship newFriendship = friendshipService.addFriendship(friendship);

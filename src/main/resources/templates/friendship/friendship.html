@@ -3,34 +3,25 @@
 <head>
     <title>FriendShip</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <!-- Custom styles for this template -->
-    <link th:href="@{css/friendship.css}">
-    <link th:href="@{css/style.css}" rel="stylesheet">
-    <link th:href="@{css/left.css}" rel="stylesheet">
-    <link th:href="@{css/footer.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/left.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
     <div th:insert="common/user/template_user.html::header"></div>
-    <div th:insert="common/user/template_user.html :: user-left"></div>
+    <div th:insert="common/user/template_user.html::user-left"></div>
     <section>
-        <h2>Tất cả bạn bè</h2>
-        <table id="friendshipTable">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-        </table>
+        <div class="container1">
+            <h2>Tất cả bạn bè</h2>
+
+        </div>
     </section>
     <div th:insert="common/user/template_user.html::footer"></div>
 <script>
     $(document).ready(function() {
         $.ajax({
-            url: 'http://localhost:1999/api/friendship/by-status?status=ACCEPTED',
+            url: 'http://localhost:1999/api/friendship/?userId1=1&status=ACCEPTED',
             type: 'GET',
             success: function (data) {
                 populateFriendship(data);
@@ -41,9 +32,15 @@
         })
         function populateFriendship(data) {
             for (var friendship of data) {
-                $(".user-left").append("<h1>"+ friendship.friendshipId + "</h1>")
+               var card = '<div class="card mb-3" style="max-width: 540px;">' +   '<div class="row g-0">'
+                    + '<div class="col-md-4">' + '<img src="..." class="img-fluid rounded-start" alt="..."></div>'
+                    + '<div class="col-md-8">' + '<div class="card-body">'
+                    + '<h5 class="card-title">Card title</h5>'
+                    + '<p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>'
+                    + '<p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>'
+                    + '</div></div></div></div>'
+                $(".container1").append(card)
             }
-            
         }
 
     })
