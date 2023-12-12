@@ -44,4 +44,12 @@ public class PostService {
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
+
+    public void deletePostAndImages(Post post) {
+        List<Image> images = post.getImages();
+        for (Image image : images) {
+            imageRepository.deleteById(image.getImageId());
+        }
+        postRepository.delete(post);
+    }
 }

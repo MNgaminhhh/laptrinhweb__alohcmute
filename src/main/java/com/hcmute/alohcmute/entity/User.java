@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hcmute.alohcmute.enums.IsAdmin;
-
 @Data
 @Entity
 @AllArgsConstructor

@@ -41,9 +41,22 @@ public class ApiPostController {
         return postService.updatePost(postId, updatedPost);
     }
 
+    // @DeleteMapping("/{postId}")
+    // public void deletePost(@PathVariable Long postId) {
+    //     postService.deletePost(postId);
+    // }
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        Optional<Post> postOptional = postService.getPostById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            postService.deletePostAndImages(post);
+
+            return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Post not found", HttpStatus.NOT_FOUND);
+        }
     }
     @PostMapping("/createWithImage")
     public ResponseEntity<Post> createPostWithImage(@RequestBody PostWithImageDto postWithImageDto) {
