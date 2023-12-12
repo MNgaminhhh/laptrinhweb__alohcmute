@@ -13,7 +13,13 @@
 </head>
 
 <body>
-    <div th:insert="~{common/user/template_user.html::header}"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+
     <div class="container1">
         <div class="content">
 
@@ -30,26 +36,21 @@
 							</label>
 							<input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
 						</div>
-						
-						
 						<br>
 						<button type="button" onclick="removeUploadedImage()">Remove Image</button>
 						<button type="button" onclick="uploadImage()">Upload Image</button>
 						<br>
 						<button type="button" onclick="submitPost()">Post</button>
 					</div>
-					
-					
                 </div>
-
             </div>
             <div class="menu">
-                 
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
                         <h2>User Information</h2>
                         <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
                         <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
@@ -70,7 +71,6 @@
                     </div>
                 </a>
             </div>
-            
         </div>
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>

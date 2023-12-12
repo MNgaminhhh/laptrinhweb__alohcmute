@@ -27,6 +27,14 @@
                 </div>
             </div>
             <div class="menu">
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2>User Information</h2>
+                        <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                    </div>  
+                </div>  
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
