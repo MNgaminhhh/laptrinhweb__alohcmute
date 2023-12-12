@@ -109,6 +109,109 @@
                 });
             }
 
+            //like
+            // Biến để theo dõi trạng thái "đã thích"
+            var isLiked = false;
+
+            // Biến để theo dõi số lượt thích
+            var likeCount = 0;
+
+            $(document).on('click', '.like-button', function () {
+                var postId = $(this).data('post-id');
+                
+                // Nếu chưa thích, thực hiện hành động "Like"
+                if (!isLiked) {
+                    likePost(postId);
+                    isLiked = true;
+                    likeCount += 1;
+                    $(this).css('background-color', 'blue'); // Thay đổi màu sắc thành xanh dương
+                } else {
+                    // Nếu đã thích, thực hiện hành động "Unlike"
+                    unlikePost(postId);
+                    isLiked = false;
+                    likeCount -= 1;
+                    $(this).css('background-color', ''); // Đặt lại màu sắc mặc định
+                }
+
+                // Hiển thị thông báo về số lượt thích
+                displayLikeCount(likeCount);
+            });
+
+            // $('.like-button').click(function () {
+
+            function displayLikeCount(count) {
+                var likeMessage = count === 1 ? '1 người đã thích' : count + ' người đã thích';
+                $('#likeMessage').text(likeMessage);
+            }
+
+            function likePost(postId) {
+                // Thực hiện hành động "Like" (có thể là gửi yêu cầu AJAX đến máy chủ)
+                console.log('Liked post with ID: ' + postId);
+            }
+
+            function unlikePost(postId) {
+                // Thực hiện hành động "Unlike" (có thể là gửi yêu cầu AJAX đến máy chủ)
+                console.log('Unliked post with ID: ' + postId);
+            }
+
+            // Bắt sự kiện khi nhấn nút "Add Comment"
+            $('#addCommentBtn').click(function () {
+                var postId = window.location.pathname.split('/').pop();
+                var newCommentContent = $('#newComment').val();
+
+                if (newCommentContent.trim() !== '') {
+                    // Sử dụng AJAX để gửi dữ liệu bình luận mới đến máy chủ
+                    $.ajax({
+                        url: 'http://localhost:1999/api/posts/' + postId + '/comments',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ content: newCommentContent }),
+                        success: function (newComment) {
+                            // Thêm bình luận mới vào danh sách và hiển thị
+                            displayComments([newComment]);
+                            $('#newComment').val(''); // Xóa nội dung của textarea sau khi thêm bình luận
+                        },
+                        error: function () {
+                            alert('Failed to add comment.');
+                        }
+                    });
+                }
+            });
+
+            function addComment(postId, content) {
+            var commentData = {
+                userId: '1',
+                content: content
+            };
+
+            $.ajax({
+                url: 'http://localhost:1999/api/posts/' + postId + '/comments',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(commentData),
+                success: function (newComment) {
+                    // Thêm cmt vào danh sách
+                    var commentItem = '<div class="comment-item">' +
+                        '<p>Comment ID: ' + newComment.commentId + '</p>' +
+                        '<p>Username: ' + newComment.user.username + '</p>' +
+                        '<p>Email: ' + newComment.user.email + '</p>' +
+                        '<p>Content: ' + newComment.content + '</p>' +
+                        '<p>Created At: ' + newComment.createdAt + '</p>' +
+                        '</div>';
+                    $('#commentList').append(commentItem);
+
+                    // Xóa nội dung của textarea sau khi thêm bình luận thành công
+                    $('#newComment').val('');
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Error:', xhr);
+                    console.log('Status:', textStatus);
+                    console.log('ErrorThrown:', errorThrown);
+                    alert('Failed to add comment.');
+                }
+            });
+        }
+
             function likePost(postId) {
                 console.log('Liked post with ID: ' + postId);
             }

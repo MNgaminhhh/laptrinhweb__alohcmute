@@ -1,9 +1,11 @@
 package com.hcmute.alohcmute.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.List;
+import java.util.Optional;
 import com.hcmute.alohcmute.entity.Comment;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    // Các truy vấn cụ thể có thể được thêm ở đây nếu cần
+    List<Comment> findAll();
+    Optional<Comment> findById(Long commentId);
 }
