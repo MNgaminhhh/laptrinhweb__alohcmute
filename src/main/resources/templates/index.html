@@ -154,6 +154,7 @@
                     contentType: 'application/json',
                     success: function (data) {
                         console.log('Post created successfully:');
+                        window.location.href = '/';
                     },
                     error: function (error) {
                         console.error('Failed to create post:', error);

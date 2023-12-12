@@ -60,6 +60,7 @@
                 data: JSON.stringify(userInfo),
                 success: function (response) {
                     alert("User registered successfully");
+                    window.location.href = '/login';
                 },
                 error: function (error) {
                     $("#errorMessage").text("Error registering user: " + error.responseJSON.message);
