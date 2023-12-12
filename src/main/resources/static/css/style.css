@@ -26,6 +26,7 @@
 
 .right .link, .rightHeader .link {
     text-decoration: none;
+    color: inherit; 
 }
 
 .right .link:hover, .rightHeader .link:hover {

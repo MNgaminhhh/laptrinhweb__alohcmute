@@ -10,4 +10,9 @@ public class AdminController {
     public String adminProfile() { 
         return "admin/page"; 
     } 
+    @GetMapping("/admin/users") 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
+    public String adminUsers() { 
+        return "admin/users"; 
+    } 
 }

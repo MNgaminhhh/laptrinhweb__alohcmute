@@ -11,7 +11,12 @@
 </head>
 
 <body>
-    <div th:include="common/user/template_user.html::header"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
     <div class="container1">
         <div class="content">
             <div class="post">
@@ -32,6 +37,7 @@
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
                         <h2>User Information</h2>
                         <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
                         <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>  
@@ -54,7 +60,7 @@
             </div>
         </div>
     </div>
-    <div th:include="common/user/template_user.html::footer"></div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
 
     <script>
         $(document).ready(function () {
@@ -78,6 +84,11 @@
 
             function displaySinglePost(post) {
                 document.title = post.content + " | ALOHCMUTE";
+                var userId = parseInt($('#userId').text());
+                var userRole = $('#roles').text();
+                var isUserPost = post.user.userId === userId;
+                var isAdmin = userRole.includes('ROLE_ADMIN');
+                var postContainer = $('#postContainer');
                 var postCard = '<div class="card1">' +
                     '<h3>' + post.user.username + '</h3>' +
                     '<p>Email: ' + post.user.email + '</p>' +
@@ -87,19 +98,59 @@
                     '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
                     '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
                     '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                    '</div>';
+                    '<button type="button" class="three-dots-button">...</button>';
+                        
+                if ((userRole.includes('ROLE_USER') && isUserPost) || isAdmin) {
+                    var editButton = '<button type="button" class="edit-button" data-post-id="' + post.postId + '">Chỉnh Sửa Bài Viết</button>';
+                    var deleteButton = '<button type="button" class="delete-button" data-post-id="' + post.postId + '">Xóa Bài Viết</button>';
+    
+                    postCard += '<div class="edit-delete-buttons">' + editButton + deleteButton + '</div>';
+                }
+    
+                postCard += '</div>';
                 postContainer.append(postCard);
+    
                 $('.like-button').click(function () {
                     var postId = $(this).data('post-id');
                     likePost(postId);
+                });
+    
+                $('.edit-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    editPost(postId);
+                });
+    
+                $('.delete-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    deletePost(postId);
                 });
                 
                 $('.comment-button').click(function () {
                     var postId = $(this).data('post-id');
                     toggleComments(postId);
                 });
+    
+                $('.three-dots-button').click(function () {
+                    $(this).closest('.card1').toggleClass('show-buttons');
+                });
+    
                 displayComments(post.comments);
             }
+    
+            function deletePost(postId) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/posts/' + postId,
+                    type: 'DELETE',
+                    success: function () {
+                        $('#postContainer').empty();
+                        alert('Post deleted successfully!');
+                    },
+                    error: function () {
+                        alert('Failed to delete the post.');
+                    }
+                });
+            }
+            
 
             function displayComments(comments) {
                 commentList.empty();

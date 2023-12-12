@@ -27,6 +27,7 @@ public class PostService {
     public void saveImage(Image image) {
         imageRepository.save(image);
     }
+
     public Post createPost(Post post) {
         return postRepository.save(post);
     }
