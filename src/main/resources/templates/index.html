@@ -140,28 +140,35 @@
 
         function submitPost() {
             var postContent = $('#postContent').val();
-            var postImage = $('#postImage')[0].files[0];
-
-            var formData = new FormData();
-            formData.append('content', postContent);
-            formData.append('image', postImage);
-
-            $.ajax({
-                url: 'http://localhost:1999/api/posts/createWithImage',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (data) {
-                    populatePostData([data]);
-                    $('#postContent').val('');
-                    $('#postImage').val('');
-                    removeUploadedImage();
-                },
-                error: function () {
-                    alert('Failed to submit post.');
-                }
-            });
+            var postImageInput = $('#uploadImage')[0];
+        
+            if (postImageInput && postImageInput.files && postImageInput.files.length > 0) {
+                var postImage = uploadedImageUrl;
+        
+                var postData = {
+                    'content': postContent,
+                    'imageUrl': postImage,
+                    'userId': $('#userId').text()
+                };
+        
+                $.ajax({
+                    url: 'http://localhost:1999/api/posts/createWithImage',
+                    type: 'POST',
+                    data: JSON.stringify(postData),
+                    processData: false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log('Post created successfully:');
+                        window.location.href = '/';
+                    },
+                    error: function (error) {
+                        console.error('Failed to create post:', error);
+                    }
+                });
+        
+            } else {
+                alert('Please select an image.');
+            }
         }
 
         $(document).ready(function () {
