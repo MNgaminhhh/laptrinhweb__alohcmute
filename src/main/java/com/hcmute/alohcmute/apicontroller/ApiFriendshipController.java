@@ -33,6 +33,13 @@ public class ApiFriendshipController {
         List<Friendship> friendships = friendshipService.getFriedshipOfUser(userId, status);
         return new ResponseEntity<>(friendships, HttpStatus.OK);
     }
+
+    @GetMapping("/by-status")
+    public ResponseEntity<List<Friendship>> getFriendshipByStatus(@RequestParam FriendshipStatus status)
+    {
+        List<Friendship> friendships = friendshipService.getFriendshipByStatus(status);
+        return new ResponseEntity<>(friendships, HttpStatus.OK);
+    }
     
     @GetMapping("/")
     public ResponseEntity<List<Friendship>> getFriendshipOfUserId(
@@ -44,12 +51,6 @@ public class ApiFriendshipController {
     @PostMapping
     public ResponseEntity<Friendship> addFriendship(@RequestBody Friendship friendship) {
         Friendship newFriendship = friendshipService.addFriendship(friendship);
-        return new ResponseEntity<>(newFriendship, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/edit/{friendshipId}")
-    public ResponseEntity<Friendship> editFriendship(@PathVariable Long id, @RequestBody Friendship friendship) {
-        Friendship newFriendship = friendshipService.editFriendship(id, friendship);
         return new ResponseEntity<>(newFriendship, HttpStatus.CREATED);
     }
 

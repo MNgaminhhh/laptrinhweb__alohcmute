@@ -12,4 +12,20 @@ $(document).ready(function() {
     $("#all-friend").click(function() {
         window.location = "http://localhost:1999/friendships/friend/1"
     });
+
+    // function addFriendships(){
+    //     fetch("http://localhost:1999/api/friendship", {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-type': 'application/json'
+    //         },
+    //         body: JSON.stringify(
+    //             {
+    //                 "user1"
+    //             }
+    //         )
+    //     }
+    //     )
+    // }
+    
 })

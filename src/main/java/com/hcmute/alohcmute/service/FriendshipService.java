@@ -1,6 +1,7 @@
 package com.hcmute.alohcmute.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,11 @@ public class FriendshipService {
     public List<Friendship> getAllFriendship() {
         return friendshipRepository.findAll();
     }
+
+    public Optional<Friendship> getFriendshipByID(Long id){
+        return friendshipRepository.findById(id);
+    }
+
     public List<Friendship> getFriendshipByStatus(FriendshipStatus status) {
         return friendshipRepository.findByStatus(status);
     }
@@ -36,13 +42,10 @@ public class FriendshipService {
         friendshipRepository.deleteById(id);
     }
 
-    public Friendship editFriendship(Long id, Friendship newFriendship) {
+    public void editFriendship(Long id, Friendship newFriendship) {
         if (friendshipRepository.existsById(id)) {
             newFriendship.setFriendshipId(id);
-            return friendshipRepository.save(newFriendship);
-        }
-        else {
-            return null;
+            friendshipRepository.save(newFriendship);
         }
     }
 
