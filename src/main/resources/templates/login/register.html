@@ -33,8 +33,7 @@
         </div>
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
+    <script>
         function registerUser() {
             var username = $("#username").val();
             var email = $("#email").val();
@@ -53,7 +52,7 @@
                 "email": email,
                 "password": password,
                 "createdAt": createdAt
-
+            };
             $.ajax({
                 type: "POST",
                 contentType: "application/json",
@@ -67,7 +66,7 @@
                 }
             });
         }
-        /*]]>*/
+
     </script>
 
 </body>

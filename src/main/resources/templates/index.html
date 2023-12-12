@@ -50,7 +50,7 @@
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
                         <h2>User Information</h2>
                         <p>Logged user: <span sec:authentication="name"> </span></p>
-                        <p>Id: <span th:text="${#authentication.principal.userId}"></span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
                 <h2>Menu</h2>
@@ -75,6 +75,7 @@
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
     <script>
+        var uploadedImageUrl = '';
 		function handleFileSelect(event) {
 			event.preventDefault();
 			var files = event.target.files || event.dataTransfer.files;
@@ -102,7 +103,7 @@
 		
 		function removeUploadedImage() {
 			$('#uploadImageLabel').css('background-image', '');
-			$('#uploadImage').val(''); // Clear the file input
+			$('#uploadImage').val('');
 		}
 		
         function uploadImage() {
@@ -118,6 +119,7 @@
                 data: formData,
                 success: function (data) {
                     alert('Image uploaded successfully. Image URL: ' + data);
+                    uploadedImageUrl = data;
                     displayImage(data);
                 },
                 error: function () {
@@ -133,29 +135,39 @@
 
         function submitPost() {
             var postContent = $('#postContent').val();
-            var postImage = $('#postImage')[0].files[0];
-
-            var formData = new FormData();
-            formData.append('content', postContent);
-            formData.append('image', postImage);
-
-            $.ajax({
-                url: 'http://localhost:1999/api/posts/createWithImage',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (data) {
-                    populatePostData([data]);
-                    $('#postContent').val('');
-                    $('#postImage').val('');
-                    removeUploadedImage();
-                },
-                error: function () {
-                    alert('Failed to submit post.');
-                }
-            });
+            var postImageInput = $('#uploadImage')[0];
+        
+            if (postImageInput && postImageInput.files && postImageInput.files.length > 0) {
+                var postImage = uploadedImageUrl;
+        
+                var postData = {
+                    'content': postContent,
+                    'imageUrl': postImage,
+                    'userId': $('#userId').text()
+                };
+        
+                $.ajax({
+                    url: 'http://localhost:1999/api/posts/createWithImage',
+                    type: 'POST',
+                    data: JSON.stringify(postData),
+                    processData: false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log('Post created successfully:');
+                    },
+                    error: function (error) {
+                        console.error('Failed to create post:', error);
+                    }
+                });
+        
+            } else {
+                alert('Please select an image.');
+            }
         }
+        
+        
+        
+        
 
         $(document).ready(function () {
             $.ajax({

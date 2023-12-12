@@ -15,14 +15,14 @@
         <h1>Đăng Nhập</h1>
         <div class="formcontainer">
             <div th:if="${param.error}">
-                Invalid username or password.
+                Tên tài khoản hoặc mật khẩu không đúng.
             </div>
             <div th:if="${param.logout}">
-                You have been logged out.
+                Bạn đã đăng xuất tài khoản !.
             </div>
             <form>
-                <div><label>User Name: <input type="text" name="username" /></label></div>
-                <div><label>Password: <input type="password" name="password" /></label></div>
+                <div><label>Tên Tài Khoản: <input type="text" name="username" /></label></div>
+                <div><label>Mật Khẩu: <input type="password" name="password" /></label></div>
                 <div class="buttonstyle"><button type="button" onclick="loginUser()">Đăng Nhập</button></div>
                 <div class="buttonstyle"><button type="button" onclick="redirectToRegister()">Đăng Ký</button></div>
             </form>
@@ -60,8 +60,6 @@
             });
             return false;
         }
-
-        // Function to redirect to the registration page
         function redirectToRegister() {
             window.location.href = '/register';
         }
