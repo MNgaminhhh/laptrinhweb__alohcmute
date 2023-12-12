@@ -12,61 +12,127 @@
 <body>
     <div th:insert="~{common/user/template_user.html::header}"></div>
     <div th:insert="~{common/user/template_user.html::user-left}">
-    
+        
     </div>
     <section>
-        <p th:text="${type_friendship}"></p>
-        <div th:if="${type_friendship == 'ACCEPTED'}">
+        <p id="userId" th:text="${userId}"></p>
+        <div th:if="${topic == 'friend'}" data-topic="friend">
             <h2 id="list-title">Tất cả bạn bè</h2>
-            <div class="container1"> 
-                <div th:if="${length1 > 0}">
-                    <div class="list-friends" th:each="i: ${#numbers.sequence(0, length1-1)}">
-                        <div class="card" style="width: 18rem;">
-                            <img src="..." class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <p class="card-text" th:text="${user2_profile[i].get().firstName+ ' ' +user2_profile[i].get().lastName}"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>  
-            </div>
+            <div class="container1"></div>
         </div>
-        <div th:if="${type_friendship == 'REQUESTED'}">
-            <h2 id="list-title">Lời mời kết bạn</h2>
-            
-            <div class="container1"> 
-                <div th:if="${length2 > 0}">
-                    <div class="list-friends" th:each="i: ${#numbers.sequence(0, length2-1)}">
-                        <div class="card" style="width: 18rem;">
-                            <img src="..." class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <p class="card-text" th:text="${user2_profile[i].get().firstName+ ' ' +user2_profile[i].get().lastName}"></p>
-                              <a href="#" class="btn btn-primary">Chấp nhận</a>
-                              <a href="#" class="btn btn-primary">Xóa</a>
-                            </div>
-                          </div>
-                    </div> 
-                </div>
-            </div>
+        
+        <div th:if="${topic == 'requested'}" data-topic="requested">
+            <h2 id="list-title">Yêu cầu kết bạn</h2>
+            <div class="container1"></div>
+        </div>
+
+        <div th:if="${topic == 'add_friend'}" data-topic="add_friend">
+            <h2 id="list-title">Thêm bạn</h2>
+            <div class="container1"></div>
         </div>
     </section>
-    <script th:src="@{/css/friendship.js}"></script>
-    <!-- <script>
-        $(document).ready(function() {
-        function init_button() {
-            var buttons = '<button type="button" class="btn btn-primary" id="all-friend">Tất cả bạn bè</button>'
-                        + '<button type="button" class="btn btn-primary" id="all-requested">Lời mời kết bạn</button>'
-            $(".btn-group-vertical").append(buttons)
+    <script th:inline="javascript">
+        function executeFunctionBasedOnTopic() {
+            var divElement = $('[data-topic]');
+            if (divElement.length > 0) {
+                var topicValue = divElement.attr('data-topic');
+                if (topicValue === 'friend') {
+                    loadFriend();
+                } else if (topicValue === 'requested') {
+                    loadRequested();
+                } else {
+                    loadAddFriend();
+                }
+            }
         }
-        init_button();
-        $("#all-requested").click(function() {
-            window.location = "http://localhost:1999/friendships/friend_requested/1"
+    
+        function loadFriend() {
+            var userId = $("#userId").text();
+            console.log(userId);
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/'+userId+'/?status=ACCEPTED',
+                type: 'GET',
+                success: function (data) {
+                    populateUserData(data)
+                },
+                error: function () {
+                    alert('Failed to fetch user data.');
+                }
+            });
+
+            function populateUserData(data) {
+                for (var friend of data) {
+                    var card = '<div class="card" style="width: 18rem;">'
+                        + '<img src="..." class="card-img-top" alt="...">'
+                        + '<div class="card-body">'
+                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p></div></div>';
+                    $(".container1").append(card );
+                }
+            }
+        }
+    
+        function loadRequested() {
+            var userId = $("#userId").text();
+            console.log(userId);
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/'+userId+'/?status=REQUESTED',
+                type: 'GET',
+                success: function (data) {
+                    populateUserData(data)
+                },
+                error: function () {
+                    alert('Failed to fetch user data.');
+                }
+            });
+
+            function populateUserData(data) {
+                for (var friend of data) {
+                    console.log(friend);
+                    var card = '<div class="card" style="width: 18rem;">'
+                        + '<img src="..." class="card-img-top" alt="...">'
+                        + '<div class="card-body">'
+                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
+                        + '<a href="#" class="btn btn-primary">Chấp nhận</a>'
+                        +  '<a href="#" class="btn btn-primary">Xóa</a></div></div>';
+                    $(".container1").append(card);
+                }
+            }
+        }
+
+        function loadAddFriend() {
+            var userId = $("#userId").text();
+            console.log(userId);
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/'+userId+'/notfriend',
+                type: 'GET',
+                success: function (data) {
+                    populateUserData(data)
+                },
+                error: function () {
+                    alert('Failed to fetch user data.');
+                }
+            });
+
+            function populateUserData(data) {
+                for (var friend of data) {
+                    console.log(friend);
+                    var card = '<div class="card" style="width: 18rem;">'
+                        + '<img src="..." class="card-img-top" alt="...">'
+                        + '<div class="card-body">'
+                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
+                        + '<a href="#" class="btn btn-primary">Thêm bạn</a>'
+                        +  '</div></div>';
+                    $(".container1").append(card);
+                }
+            }
+        }
+    
+        // Gọi hàm khi trang tải xong
+        $(document).ready(function() {
+            executeFunctionBasedOnTopic();
         });
-        $("#all-friend").click(function() {
-            window.location = "http://localhost:1999/friendships/friend/1"
-        });
-    })
-    </script> -->
+    </script>
+    <script th:src="@{/css/friendship.js}"></script>
     <script th:if="${type_friendship == 'ACCEPTED'}" th:inline="javascript">
         $(document).ready(function() {
             $("#all-friend").css("background-color", "#0d6efd");

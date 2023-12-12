@@ -1,10 +1,12 @@
 package com.hcmute.alohcmute.service;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.hcmute.alohcmute.entity.Profile;
+import com.hcmute.alohcmute.enums.FriendshipStatus;
 import com.hcmute.alohcmute.repository.ProfileRepository;
 
 @Service
@@ -19,8 +21,12 @@ public class ProfileService {
         return profileRespository.findById(userID);
     }
 
-    public Profile saveProfile(Profile profile) {
-       return profileRespository.save(profile);
+    public List<Profile> getProfileUserNotBeFriend(Long userId1) {
+        return profileRespository.findProfileOfUserNotBeFriend(userId1);
+    }
+
+    public List<Profile> getProfileFriend(Long userId1, FriendshipStatus status) {
+        return profileRespository.findProfileFriend(userId1, status);
     }
 
     public void deleteById(Long userId) {

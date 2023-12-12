@@ -24,7 +24,7 @@ public class FriendshipService {
         return friendshipRepository.findByStatus(status);
     }
 
-    public List<Friendship> getFriedshipOfUser(Long userId, FriendshipStatus status) {
+    public List<Friendship> getFriendshipOfUser(Long userId, FriendshipStatus status) {
          return friendshipRepository.findFriendshipOfUser(userId, status);
     }
 
