@@ -5,33 +5,46 @@
     <title>Login</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- Custom styles for this template -->
-    <link th:href="@{css/home.css}" rel="stylesheet">
-    <link th:href="@{css/style.css}" rel="stylesheet">
-    <link th:href="@{css/footer.css}" rel="stylesheet">
+    <link th:href="@{../css/login.css}" rel="stylesheet">
+    <link th:href="@{../css/style.css}" rel="stylesheet">
+    <link th:href="@{../css/footer.css}" rel="stylesheet">
 </head>
 <body>
     <div th:insert="~{common/user/template_user.html::header}"></div>
-    <div th:if="${param.error}">
-        Invalid username or password.
+    <div class="formwrapper">
+        <h1>Đăng Nhập</h1>
+        <div class="formcontainer">
+            <div th:if="${param.error}">
+                Tên tài khoản hoặc mật khẩu không đúng.
+            </div>
+            <div th:if="${param.logout}">
+                Bạn đã đăng xuất tài khoản !.
+            </div>
+            <form>
+                <div><label>Tên Tài Khoản: <input type="text" name="username" /></label></div>
+                <div><label>Mật Khẩu: <input type="password" name="password" /></label></div>
+                <div class="buttonstyle"><button type="button" onclick="loginUser()">Đăng Nhập</button></div>
+                <div class="buttonstyle"><button type="button" onclick="redirectToRegister()">Đăng Ký</button></div>
+            </form>
+        </div>
     </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
-    <form id="loginForm">
-        <div><label>User Name: <input type="text" id="username" name="username" /> </label></div>
-        <div><label>Password: <input type="password" id="password" name="password" /> </label></div>
-        <div><button type="button" onclick="loginUser()">Sign In</button></div>
-    </form>
-
-    <!-- Add the registration button -->
-    <div><button type="button" onclick="redirectToRegister()">Register</button></div>
 
     <script th:inline="javascript">
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+
         function loginUser() {
-            var username = $('#username').val();
-            var password = $('#password').val();
+            var username = $('input[name="username"]').val();
+            var password = $('input[name="password"]').val();
             $.ajax({
-                url: 'http://localhost:1999/api/login',
+                url: 'http://localhost:1999/api/generateToken',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -39,7 +52,7 @@
                     password: password
                 }),
                 success: function(response) {
-                    window.location.href = '/alluser';
+                    window.location.href = '/';
                 },
                 error: function(xhr, status, error) {
                     alert('Invalid username or password.');
@@ -47,8 +60,6 @@
             });
             return false;
         }
-
-        // Function to redirect to the registration page
         function redirectToRegister() {
             window.location.href = '/register';
         }

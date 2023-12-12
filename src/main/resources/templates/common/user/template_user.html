@@ -8,10 +8,13 @@
             <div class="left">
             </div>
             <div class="rightHeader">
-                <a href="/" class="link">Trang Chủ</a>
                 <a href="/contact" class="link">Liên Hệ</a>
-                <ThemeToggle></ThemeToggle>
-                <AuthLink></AuthLink>
+                <div sec:authorize="isAuthenticated()">
+                    <a href="/logout" class="link">Đăng Xuất</a>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <a href="/login" class="link">Đăng Nhập</a>
+                </div>
             </div>
         </div>
     </div>
