@@ -9,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hcmute.alohcmute.entity.Friendship;
 import com.hcmute.alohcmute.entity.Profile;
@@ -66,19 +64,5 @@ public class FriendshipController {
         model.addAttribute("length2", profiles.size());
         model.addAttribute("type_friendship", "REQUESTED");
         return "friendship/friendship";
-    }
-
-    @PostMapping("friend_requested/{userId}")
-    public String updatFriendship(Model model, @RequestParam (value="friendshipId") Long id, @RequestParam (value = "status") FriendshipStatus status) {
-        System.out.println("11111111111111");
-        Optional<Friendship> oldfriendship = friendService.getFriendshipByID(id);
-        if (oldfriendship.isPresent()){
-            Friendship newfriendship = oldfriendship.get();
-            newfriendship.setStatus(status);
-            System.out.println(newfriendship.getStatus().toString());
-            friendService.editFriendship(id, newfriendship);
-            return "redirect:/";
-        }
-        return "index";
     }
 }
