@@ -27,18 +27,13 @@ public class ApiFriendshipController {
         this.friendshipService = friendshipService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Friendship>> getAllFriendship() {
-        List<Friendship> friendships = friendshipService.getAllFriendship();
+    @GetMapping("/{userId}/")
+    public ResponseEntity<List<Friendship>> getFriendshipOfUser(@PathVariable Long userId, @RequestParam FriendshipStatus status)
+    {
+        List<Friendship> friendships = friendshipService.getFriedshipOfUser(userId, status);
         return new ResponseEntity<>(friendships, HttpStatus.OK);
     }
     
-    @GetMapping("/by-status")
-    public ResponseEntity<List<Friendship>> getFrienshipByStatus(@RequestParam FriendshipStatus status) {
-        List<Friendship> friendships = friendshipService.getFriendshipByStatus(status);
-        return new ResponseEntity<>(friendships, HttpStatus.OK);
-    }
-
     @GetMapping("/")
     public ResponseEntity<List<Friendship>> getFriendshipOfUserId(
         @RequestParam(value = "userId1") Long userId1, @RequestParam(value = "status") FriendshipStatus status){

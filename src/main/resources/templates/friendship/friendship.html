@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>FriendShip</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -15,13 +15,56 @@
     
     </div>
     <section>
-        <div class="container1">
-            <h2>Tất cả bạn bè</h2>
-
+        <p th:text="${type_friendship}"></p>
+        <div th:if="${type_friendship == 'ACCEPTED'}">
+            <h2 id="list-title">Tất cả bạn bè</h2>
+            <div class="container1"> 
+                <div class="list-friends" th:each="i: ${#numbers.sequence(0, length1-1)}">
+                    <div class="card" style="width: 18rem;">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <p class="card-text" th:text="${user2_profile[i].get().firstName+ ' ' +user2_profile[i].get().lastName}"></p>
+                        </div>
+                        </div>
+                </div>  
+            </div>
+        </div>
+        <div th:if="${type_friendship == 'REQUESTED'}">
+            <h2 id="list-title">Lời mời kết bạn</h2>
+            
+            <div class="container1"> 
+                <div th:if="${length2 > 0}">
+                    <script th:inline="javascript">
+                        $(document).ready(function() {
+                            console.log("Hello");
+                        })
+                    </script>
+                    <div class="list-friends" th:each="i: ${#numbers.sequence(0, length2-1)}">
+                        <div class="card" style="width: 18rem;">
+                            <img src="..." class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <p class="card-text" th:text="${user2_profile[i].get().firstName+ ' ' +user2_profile[i].get().lastName}"></p>
+                              <a href="#" class="btn btn-primary">Chấp nhận</a>
+                              <a href="#" class="btn btn-primary">Xóa</a>
+                            </div>
+                          </div>
+                    </div> 
+                </div>
+            </div>
         </div>
     </section>
     <div th:insert="common/user/template_user.html::footer"></div>
 <script th:src="@{/script/friendship.js}"></script>
+<script th:if="${type_friendship == 'ACCEPTED'}" th:inline="javascript">
+    $(document).ready(function() {
+        $("#all-friend").css("background-color", "#0d6efd");
+    });
+</script>
+<script th:if="${type_friendship == 'REQUESTED'}" th:inline="javascript">
+    $(document).ready(function() {
+        $("#all-requested").css("background-color", "#0d6efd");
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
