@@ -1,11 +1,11 @@
-
 $(document).ready(function() {
     function init_button() {
         var buttons = '<button type="button" class="btn btn-primary" id="all-friend">Tất cả bạn bè</button>'
                     + '<button type="button" class="btn btn-primary" id="all-requested">Lời mời kết bạn</button>'
+                    + '<button type="button" class="btn btn-primary" id="all-requested">Thêm bạn</button>'
         $(".btn-group-vertical").append(buttons)
     }
-    init_button()
+    init_button();
     $("#all-requested").click(function() {
         window.location = "http://localhost:1999/friendships/friend_requested/1"
     });
