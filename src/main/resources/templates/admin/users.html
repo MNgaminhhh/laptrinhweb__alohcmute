@@ -36,27 +36,25 @@
                     console.error('Error fetching user information:', error);
                 }
             });
-
+    
             function displayUserList(users) {
                 var userListContainer = $('#userListContainer');
                 userListContainer.empty();
-
+    
                 users.forEach(function(user) {
                     var userCard = $('<div class="user-card">');
                     userCard.append('<h3>' + user.username + '</h3>');
                     userCard.append('<p>Email: ' + user.email + '</p>');
                     userCard.append('<p>Created At: ' + user.createdAt + '</p>');
-                    userCard.append('<button class="update-btn" data-user-id="' + user.userId + '">Trang Cá Nhân</button>');
+    
+                    // Update this line to include the correct path for the user profile
+                    userCard.append('<a class="update-btn" href="/admin/users/' + user.userId + '">Trang Cá Nhân</a>');
+    
                     userCard.append('<button class="delete-btn" data-user-id="' + user.userId + '">Chỉnh Sửa</button>');
-
+    
                     userListContainer.append(userCard);
                 });
-
-                userListContainer.on('click', '.update-btn', function() {
-                    var userId = $(this).data('user-id');
-                    console.log('Update user with ID:', userId);
-                });
-
+    
                 userListContainer.on('click', '.delete-btn', function() {
                     var userId = $(this).data('user-id');
                     console.log('Delete user with ID:', userId);
@@ -64,5 +62,6 @@
             }
         });
     </script>
+    
 </body>
 </html>

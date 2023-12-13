@@ -79,17 +79,7 @@
                             <h3>Trang cá nhân</h3>
                         </div>
                     </a>
-                </div>
-                
-                <div th:unless="${#authorization.expression('isAuthenticated()')}">
-                    <a th:href="@{'/admin/users/profile/' + 0">
-                        <div class="card">
-                            <h3>Trang cá nhân</h3>
-                        </div>
-                    </a>
-                </div>
-                
-               
+                </div>  
             </div>
         </div>
     </div>

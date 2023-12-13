@@ -20,6 +20,16 @@ public class AdminController {
     @GetMapping("/admin/users/profiles/{userId}") 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
     public String adminUsersProfile(@PathVariable Long userId, Model model) { 
+        return "admin/adminprofile"; 
+    }
+    @GetMapping("/admin/users/{userId}") 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
+    public String adminUsers(@PathVariable Long userId, Model model) { 
         return "admin/adminprofileuser"; 
+    }
+    @GetMapping("/admin/users/edit/{userId}") 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
+    public String adminEditUsers(@PathVariable Long userId, Model model) { 
+        return "admin/edituser"; 
     }
 }

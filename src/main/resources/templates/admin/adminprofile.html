@@ -23,14 +23,13 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2 id="userFullName"></h2>
-                        <p>Email: <span id="userName"></span></p>
-                        <p>Roles: <span id="userRoles"></span></p>
-                        <p>User ID: <span id="userID"></span></p>
+                        <h2>User Information</h2>
+                        <p>Logged user: <span id="usernamee" sec:authentication="name"> </span></p>
+                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>
                     <button class="buttonMore" id="toggleProfileBtn" onclick="toggleUserProfile()">Thông tin tài khoản</button>
                 </div>
-                
                 <div id="postContainer"></div>
                 <button class="buttonMore" id="togglePostBtn" onclick="toggleUserPosts()">Bài đăng của tôi</button>
                 <div id="postUserContainer"></div>
@@ -91,30 +90,10 @@
                 button.text('Đóng thông tin tài khoản');
             }
         }
-        loadUserInfo();
-        function loadUserInfo() {
-            var userId = getUserIdFromUrl();
-                $.ajax({
-                url: 'http://localhost:1999/api/users/' + userId,
-                type: 'GET',
-                success: function(user) {
-                    $('#userAvatar').attr('src', user.avatarUrl || '/images/default-avatar.jpg');
-                    $('#userFullName').text(user.firstName);
-                    $('#userName').text(user.username);
-                    $('#userRoles').text(user.isAdmin);
-                    $('#userID').text(user.userId);
-                },
-                error: function(error) {
-                    console.error('Error fetching user information:', error);
-                }
-            });
-        }
+
         function loadUserProfile() {
-            var userId = getUserIdFromUrl();
-            if (!userId) {
-                console.error('User ID not found in the URL.');
-                return;
-            }
+            var userId = $('#userId').text();
+
             $.ajax({
                 url: 'http://localhost:1999/api/profile/' + userId,
                 type: 'GET',
@@ -125,10 +104,6 @@
                     handleUserProfileNotFound();
                 }
             });
-        }
-        function getUserIdFromUrl() {
-            var matches = window.location.pathname.match(/\/admin\/users\/(\d+)/);
-            return matches ? matches[1] : null;
         }
         function handleUserProfileNotFound() {
             displayUserProfile(null);
@@ -177,11 +152,7 @@
         }
         
         function insertUserProfile() {
-            var userId = getUserIdFromUrl();
-            if (!userId) {
-                console.error('User ID not found in the URL.');
-                return;
-            }
+            var userId = $('#userId').text();
             var newProfile = {
                 'firstName': $('#inputFirstName').val(),
                 'lastName': $('#inputLastName').val(),
@@ -218,7 +189,7 @@
         }
         
         function loadUserPostProfile() {
-            var username = $('#userName').text();
+            var username = $('#usernamee').text();
             $.ajax({
                 url: 'http://localhost:1999/api/posts/byUsername?username=' + username,
                 type: 'GET',
