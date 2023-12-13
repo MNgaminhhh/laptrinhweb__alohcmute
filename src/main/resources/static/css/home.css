@@ -8,6 +8,18 @@ body {
   border: 2px dashed #ccc;
   background-color: #f8f8f8;
 }
+.post-header {
+  display: flex;
+  align-items: center;
+}
+
+.post-header h3 {
+  margin-right: 5px;
+}
+.post-header h4 {
+  color: #696969;
+}
+
 .like-button, .comment-button {
   background-color: #4CAF50;
   color: white; 
