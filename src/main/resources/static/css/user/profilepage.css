@@ -213,15 +213,16 @@ h2, p {
     margin: 20px 0;
 }
 
-.user-profile input[type="text"],
-.user-profile textarea {
+.user-profile input,
+.user-profile textarea,
+.user-profile select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
-    font-size: 16px; /* Adjust the font size as needed */
+    font-size: 16px;
 }
 
 .user-profile textarea {

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import com.hcmute.alohcmute.Dto.UpdateProfileRequest;
 import com.hcmute.alohcmute.entity.Profile;
 import com.hcmute.alohcmute.service.ProfileService;
 
@@ -42,12 +43,13 @@ public class ApiProfileController {
 
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long userId, @RequestBody Profile updatedProfile) {
-        Profile profile = profileService.updateProfile(userId, updatedProfile);
-        return (profile != null)
-                ? new ResponseEntity<>(profile, HttpStatus.OK)
+    public ResponseEntity<Profile> updateProfile(@PathVariable Long userId, @RequestBody UpdateProfileRequest request) {
+        Profile updatedProfile = profileService.updateProfile(userId, request);
+        return (updatedProfile != null)
+                ? new ResponseEntity<>(updatedProfile, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long userId) {
