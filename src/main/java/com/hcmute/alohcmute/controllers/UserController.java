@@ -17,7 +17,9 @@ public class UserController {
     public String userProfile() { 
         return "user/profileuser"; 
     } 
-  
-    
-    
+    @GetMapping("/user/profile/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String userProfile(@PathVariable Long userId, Model model) {
+        return "user/profileuser";
+    }
 }

@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.alohcmute.enums.Gender;
 
 @Data

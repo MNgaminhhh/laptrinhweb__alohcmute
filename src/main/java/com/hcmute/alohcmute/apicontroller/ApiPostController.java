@@ -41,10 +41,10 @@ public class ApiPostController {
         return postService.updatePost(postId, updatedPost);
     }
 
-    // @DeleteMapping("/{postId}")
-    // public void deletePost(@PathVariable Long postId) {
-    //     postService.deletePost(postId);
-    // }
+    @GetMapping("/byUsername")
+    public List<Post> getPostsByUsername(@RequestParam String username) {
+        return postService.getPostsByUsername(username);
+    }
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         Optional<Post> postOptional = postService.getPostById(postId);

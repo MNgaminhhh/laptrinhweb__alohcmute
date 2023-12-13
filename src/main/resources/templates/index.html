@@ -65,11 +65,12 @@
                         <h3>Tin nhắn</h3>
                     </div>
                 </a>
-                <a href="/user/profile">
+                <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
                     <div class="card">
                         <h3>Trang cá nhân</h3>
                     </div>
                 </a>
+                
             </div>
         </div>
     </div>
