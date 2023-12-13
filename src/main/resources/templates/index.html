@@ -65,11 +65,30 @@
                         <h3>Tin nhắn</h3>
                     </div>
                 </a>
-                <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
-                    <div class="card">
-                        <h3>Trang cá nhân</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                    <a th:href="@{'/admin/users/profile/' + 0">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
                
             </div>
         </div>
