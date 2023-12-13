@@ -52,9 +52,6 @@ public class User {
     @JsonIgnore
     private List<Message> sentMessages;
 
-    @OneToMany(mappedBy = "receiver")
-    @JsonIgnore
-    private List<Message> receivedMessages;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore

@@ -20,14 +20,13 @@ public class Message {
     private Long messageId;
 
     @ManyToOne
+    @JoinColumn(name = "conversation_ID", nullable = false)
+    private Conversation conversation;
+
+    @ManyToOne
     @JoinColumn(name = "sender_ID", nullable = false)
     @JsonIgnore
     private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "receiver_ID", nullable = false)
-    @JsonIgnore
-    private User receiver;
 
     private String content;
 
