@@ -156,8 +156,6 @@
             var postIdToDisplay = window.location.pathname.split('/').pop();
             var commentSection = $('#commentsSection');
             var commentList = $('#commentList');
-            var commentForm = $('#commentForm');
-            var postContainer = $('#postContainer');
             var commentsVisible = false;
 
             $.ajax({
@@ -278,11 +276,51 @@
                 });
             }
             
-            
-            
             function likePost(postId) {
-                console.log('Liked post with ID: ' + postId);
+                var isLiked = $(`.like-button[data-post-id="${postId}"]`).hasClass('liked');
+                if (isLiked) {
+                    unlikePost(postId);
+                } else {
+                    $.ajax({
+                        url: 'http://localhost:1999/api/like/' + postId,
+                        type: 'POST',
+                        success: function (data) {
+                            console.log('Liked post with ID: ' + postId);
+                            updateLikeCount(postId, data.likes.length);
+                            $(`.like-button[data-post-id="${postId}"]`).addClass('liked');
+                        },
+                        error: function () {
+                            alert('Failed to like the post.');
+                        }
+                    });
+                }
+            }   
+            function unlikePost(postId) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/unlike/' + postId,
+                    type: 'DELETE',
+                    success: function (data) {
+                        console.log('Unliked post with ID: ' + postId);
+                        updateLikeCount(postId, data.likes.length);
+                        $(`.like-button[data-post-id="${postId}"]`).removeClass('liked');
+                    },
+                    error: function () {
+                        alert('Failed to unlike the post.');
+                    }
+                });
             }
+            
+            function updateLikeCount(postId, likeCount) {
+                $(`.like-button[data-post-id="${postId}"]`).text('Thích (' + likeCount + ')');
+            }
+            
+            $(document).ready(function () {
+                $('.like-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    likePost(postId);
+                });
+            });
+            
             function editPost(postId) {
                 var editUrl = '/post/edit/' + postId;
                 window.location.href = editUrl;
