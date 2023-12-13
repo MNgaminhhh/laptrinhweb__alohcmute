@@ -48,6 +48,12 @@ public class ApiProfileController {
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/message")
+    public ResponseEntity<List<Profile>> getProfileOfMessageSenderOrReceiver(@PathVariable Long userId) {
+        List<Profile> profile = profileService.getProfileOfMessageSenderOrReceiver(userId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long userId) {
         profileService.deleteById(userId);

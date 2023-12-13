@@ -59,7 +59,7 @@
                         <h3>Trang chủ</h3>
                     </div>
                 </a>
-                <a href="tinnhan.html">
+                <a th:href="'/message/'+${#authentication.principal.userId}">
                     <div class="card">
                         <h3>Tin nhắn</h3>
                     </div>
@@ -215,8 +215,6 @@
                     showComments(postId);
                 });
             }
-        
-           
         });
         
         

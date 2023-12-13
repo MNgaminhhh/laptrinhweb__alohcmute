@@ -29,6 +29,10 @@ public class ProfileService {
         return profileRespository.findProfileFriend(userId1, status);
     }
 
+    public List<Profile> getProfileOfMessageSenderOrReceiver(Long userId) {
+        return profileRespository.findProfileMessage(userId);
+    }
+
     public void deleteById(Long userId) {
         profileRespository.deleteById(userId);
     }
