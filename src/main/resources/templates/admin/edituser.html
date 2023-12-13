@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Trang Chủ | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link th:href="@{../../../css/user/profilepage.css}" rel="stylesheet">
+    <link th:href="@{../../../css/admin/edituser.css}" rel="stylesheet">
     <link th:href="@{../../../css/style.css}" rel="stylesheet">
     <link th:href="@{../../../css/footer.css}" rel="stylesheet">
 </head>
@@ -28,33 +28,19 @@
                         <p>Roles: <span id="userRoles"></span></p>
                         <p>User ID: <span id="userID"></span></p>
                     </div>
-                    <button class="buttonMore" id="toggleProfileBtn" onclick="toggleUserProfile()">Thông tin tài khoản</button>
                 </div>
                 
                 <div id="postContainer"></div>
-                <button class="buttonMore" id="togglePostBtn" onclick="toggleUserPosts()">Bài đăng của tôi</button>
-                <div id="postUserContainer"></div>
-
+                <div id="UserAccContainer"></div>
             </div>
         </div>
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
 
     <script>
-        function toggleUserProfile() {
-            var container = $('#postContainer');
-            var button = $('#toggleProfileBtn');
-
-            if (container.is(':visible')) {
-                container.hide();
-                button.text('Thông tin tài khoản');
-            } else {
-                loadUserProfile();
-                container.show();
-                button.text('Đóng thông tin tài khoản');
-            }
-        }
+        loadUserProfile();
         loadUserInfo();
+        loadUserAccInfo();
         function loadUserInfo() {
             var userId = getUserIdFromUrl();
                 $.ajax({
@@ -72,6 +58,77 @@
                 }
             });
         }
+        function loadUserAccInfo() {
+            var userId = getUserIdFromUrl();
+                $.ajax({
+                url: 'http://localhost:1999/api/users/' + userId,
+                type: 'GET',
+                success: function(user) {
+                    displayUserAccountInfo(user);
+                },
+                error: function(error) {
+                    console.error('Error fetching user information:', error);
+                }
+            });
+        }
+        function displayUserAccountInfo(user) {
+            $('#UserAccContainer').empty();
+            var formattedCreatedAt = new Date(user.createdAt).toLocaleString();
+            var userAccHtml = '<div class="user-account-info">' +
+                '<h2>Thông Tin Tài Khoản</h2>' +
+                '<br>' +
+                '<p>User ID: <input type="text" id="inputUserId" value="' + user.userId + '" readonly></p>' +
+                '<p>Username: <input type="text" id="inputUsername" value="' + user.username + '"></p>' +
+                '<p>Email: <input type="text" id="inputEmail" value="' + user.email + '"></p>' +
+                '<p>Role: <select id="inputRole">' +
+                    '<option value="ROLE_USER" ' + (user.isAdmin === 'ROLE_USER' ? 'selected' : '') + '>User</option>' +
+                    '<option value="ROLE_ADMIN" ' + (user.isAdmin === 'ROLE_ADMIN' ? 'selected' : '') + '>Admin</option>' +
+                    '</select></p>' +
+                '<p>Created At: <input type="text" id="inputCreatedAt" value="' + formattedCreatedAt + '" readonly></p>' +
+                '<button onclick="updateUserAccount()">Cập Nhật</button>' +
+                '<button onclick="deleteUserAccount()">Xóa Tài Khoản</button>' +
+                '</div>';
+            $('#UserAccContainer').append(userAccHtml);
+        }
+        function deleteUserAccount() {
+            var userId = $('#inputUserId').val();
+
+            if (confirm('Bạn có chắc chắn muốn xóa tài khoản này ?')) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/users/' + userId,
+                    type: 'DELETE',
+                    success: function (data) {
+                        alert('Xóa Thành Công !');
+                        window.location.href = '/admin/users';
+                    },
+                    error: function () {
+                        alert('Failed to delete user account.');
+                    }
+                });
+            }
+        }
+        function updateUserAccount() {
+            var userId = $('#inputUserId').val();
+            var updatedUser = {
+                'username': $('#inputUsername').val(),
+                'email': $('#inputEmail').val(),
+                'isAdmin': $('#inputRole').val()
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/users/' + userId,
+                type: 'PUT',
+                data: JSON.stringify(updatedUser),
+                contentType: 'application/json',
+                success: function (data) {
+                    alert('User account updated successfully.');
+                },
+                error: function () {
+                    alert('Failed to update user account.');
+                }
+            });
+        }
+        
         function loadUserProfile() {
             var userId = getUserIdFromUrl();
             if (!userId) {
@@ -90,9 +147,10 @@
             });
         }
         function getUserIdFromUrl() {
-            var matches = window.location.pathname.match(/\/admin\/users\/(\d+)/);
+            var matches = window.location.pathname.match(/\/admin\/users\/edit\/(\d+)/);
             return matches ? matches[1] : null;
         }
+        
         function handleUserProfileNotFound() {
             displayUserProfile(null);
         }
@@ -165,64 +223,6 @@
                     alert('Failed to insert user profile.');
                 }
             });
-        }
-        function toggleUserPosts() {
-            var container = $('#postUserContainer');
-            var button = $('#togglePostBtn');
-        
-            if (container.is(':visible')) {
-                container.hide();
-                button.text('Bài đăng của tôi');
-            } else {
-                loadUserPostProfile();
-                container.show();
-                button.text('Đóng bài đăng');
-            }
-        }
-        
-        function loadUserPostProfile() {
-            var username = $('#userName').text();
-            $.ajax({
-                url: 'http://localhost:1999/api/posts/byUsername?username=' + username,
-                type: 'GET',
-                success: function (data) {
-                    displayUserPosts(data);
-                },
-                error: function () {
-                    alert('Failed to fetch user posts.');
-                }
-            });
-        }
-        
-        function displayUserPosts(posts) {
-            $('#postUserContainer').empty();
-            
-            if (posts.length > 0) {
-                var postListHtml = '<div class="userpostprofile">';
-                posts.forEach(function (post) {
-                    var postCard = '<div class="card1">' +
-                        '<a href="http://localhost:1999/post/' + post.postId + '">' +
-                        '<h3>' + post.user.username + '</h3>' +
-                        '<p>Email: ' + post.user.email + '</p>' +
-                        '<p>Post ID: ' + post.postId + '</p>' +
-                        '<p>Content: ' + post.content + '</p>' +
-                        '<p>Created At: ' + post.createdAt + '</p>' +
-                        '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '</a>' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                        '</div>';
-            
-                    postListHtml += postCard;
-                });
-                postListHtml += '</div>';
-            
-                $('#postUserContainer').append(postListHtml);
-            } else {
-                var noPostsHtml = '<p>No posts found for this user.</p>';
-                $('#postUserContainer').append(noPostsHtml);
-            }
-            
         }
  
         function updateUserProfile() {
