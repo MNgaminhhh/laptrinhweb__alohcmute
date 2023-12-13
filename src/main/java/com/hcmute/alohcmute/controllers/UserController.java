@@ -11,12 +11,11 @@ public class UserController {
     public String showUsers(Model model) {
         return "user/alluser";
     }
-    
 
-    @GetMapping("/user/userProfile") 
+    @GetMapping("/user/profile") 
     @PreAuthorize("hasAuthority('ROLE_USER')") 
     public String userProfile() { 
-        return "Welcome to User Profile"; 
+        return "user/profileuser"; 
     } 
   
     

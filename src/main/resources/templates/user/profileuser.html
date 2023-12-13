@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link th:href="@{../css/singlepage.css}" rel="stylesheet">
+    <link th:href="@{../css/style.css}" rel="stylesheet">
+    <link th:href="@{../css/footer.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+    <div class="container1">
+        <div class="content">
+            <div class="post">
+                
+            </div>
+            <div class="menu">
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2>User Information</h2>
+                        <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                    </div>  
+                </div>        
+                <h2>Menu</h2>
+                <a href="/">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <a href="tinnhan.html">
+                    <div class="card">
+                        <h3>Tin nhắn</h3>
+                    </div>
+                </a>
+                <a href="/user/profile">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+
+</body>
+
+</html>
