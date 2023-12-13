@@ -266,3 +266,26 @@ a {
   text-decoration: none;
   color: black;
 }
+.edit-post-form {
+  margin-top: 10px; /* Adjust the margin as needed */
+}
+
+.edit-post-form textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.edit-post-form button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.edit-post-form button:hover {
+  background-color: #45a049;
+}

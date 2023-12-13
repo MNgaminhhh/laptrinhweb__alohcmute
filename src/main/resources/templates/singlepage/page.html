@@ -138,18 +138,24 @@
             }
     
             function deletePost(postId) {
-                $.ajax({
-                    url: 'http://localhost:1999/api/posts/' + postId,
-                    type: 'DELETE',
-                    success: function () {
-                        $('#postContainer').empty();
-                        alert('Post deleted successfully!');
-                    },
-                    error: function () {
-                        alert('Failed to delete the post.');
-                    }
-                });
+                var confirmDelete = confirm('Bạn chắc chắn muốn xóa bài viết này ?');
+                if (confirmDelete) {
+                    $.ajax({
+                        url: 'http://localhost:1999/api/posts/' + postId,
+                        type: 'DELETE',
+                        success: function () {
+                            $('#postContainer').empty();
+                            alert('Xóa Thành Công !');
+                        },
+                        error: function () {
+                            alert('Failed to delete the post.');
+                        }
+                    });
+                } else {
+                    console.log('Deletion canceled.');
+                }
             }
+            
             
 
             function displayComments(comments) {
@@ -171,7 +177,11 @@
             function likePost(postId) {
                 console.log('Liked post with ID: ' + postId);
             }
-
+            function editPost(postId) {
+                var editUrl = '/post/edit/' + postId;
+                window.location.href = editUrl;
+            }
+            
             function toggleComments(postId) {
                 if (commentsVisible) {
                     commentSection.hide();

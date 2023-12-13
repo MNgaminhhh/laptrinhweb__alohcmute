@@ -80,4 +80,26 @@ public class ApiPostController {
 
         return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
     }
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<Post> updatePostWithImage(@PathVariable Long postId, @RequestBody PostWithImageDto updatedPostWithImageDto) {
+        Optional<Post> postOptional = postService.getPostById(postId);
+
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            post.setContent(updatedPostWithImageDto.getContent());
+            Image image = post.getImages().isEmpty() ? new Image() : post.getImages().get(0);
+            image.setFilePath(updatedPostWithImageDto.getImageUrl());
+            image.setCreatedAt(LocalDateTime.now());
+            image.setUser(post.getUser());
+            image.setPost(post);
+
+            postService.saveImage(image);
+            Post updatedPost = postService.updatePost(postId, post);
+
+            return new ResponseEntity<>(updatedPost, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
