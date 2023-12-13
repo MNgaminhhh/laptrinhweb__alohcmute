@@ -24,24 +24,27 @@
         <div class="content">
 
             <div class="post" id="postContainer">
-
-                <div class="post-form" id="postForm">
+                <div class="post-button-container" sec:authorize="isAuthenticated()">
+                    <button class="post-button" onclick="togglePostForm()">Đăng Bài</button>
+                </div>
+                      
+                <div class="post-form" id="postForm" style="display: none;">
                     <div class="card">
-						<h2>Post</h2>
-						<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-					
-						<div class="image-preview" id="imagePreview">
-							<label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
-								Drag and drop image here or click to upload
-							</label>
-							<input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-						</div>
-						<br>
-						<button type="button" onclick="removeUploadedImage()">Remove Image</button>
-						<button type="button" onclick="uploadImage()">Upload Image</button>
-						<br>
-						<button type="button" onclick="submitPost()">Post</button>
-					</div>
+                        <h2>Post</h2>
+                        <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
+
+                        <div class="image-preview" id="imagePreview">
+                            <label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+                                Drag and drop image here or click to upload
+                            </label>
+                            <input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                        </div>
+                        <br>
+                        <button type="button" onclick="removeUploadedImage()">Remove Image</button>
+                        <button type="button" onclick="uploadImage()">Upload Image</button>
+                        <br>
+                        <button type="button" onclick="submitPost()">Post</button>
+                    </div>
                 </div>
             </div>
             <div class="menu">
@@ -86,6 +89,9 @@
     <div th:insert="~{common/user/template_user.html::footer}"></div>
     <script>
         var uploadedImageUrl = '';
+        function togglePostForm() {
+            $('#postForm').toggle();
+        }
 		function handleFileSelect(event) {
 			event.preventDefault();
 			var files = event.target.files || event.dataTransfer.files;
