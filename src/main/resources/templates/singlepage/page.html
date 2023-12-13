@@ -25,9 +25,10 @@
                 <div id="commentsSection" style="display: none;">
                     <h2>Comments</h2>
                     <div id="commentForm">
-                    <div id="commentList"></div>
-                        <textarea id="newComment" placeholder="Add a comment"></textarea>
-                        <button type="button" id="addCommentBtn">Add Comment</button>
+                    <div class="commentFormInput" id="commentList"></div>
+                        <h2>Viết Bình Luận</h2>
+                        <textarea id="newComment" placeholder="Thêm một bình luận..."></textarea>
+                        <button type="button" id="addCommentBtn" onclick="postComment()">Đăng Bình Luận</button>
                     </div>
                 </div>
             </div>
@@ -63,6 +64,84 @@
     <div th:insert="~{common/user/template_user.html::footer}"></div>
 
     <script>
+        var postId = '';
+        function postComment() {
+            var commentContent = $('#newComment').val().trim();
+            var userId = $('#userId').text();
+
+            if (commentContent === '') {
+                alert('Vui lòng nhập bình luận ...');
+                return;
+            }
+            var commentData = {
+                'userId': userId,
+                'postId': postId,
+                'content': commentContent
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/comments/add',
+                type: 'POST',
+                data: JSON.stringify(commentData),
+                contentType: 'application/json',
+                success: function (newComment) {
+                    console.log('Commets created successfully:');
+                    window.location.href = '/post/' + postId;
+                },
+                error: function () {
+                    alert('Failed to add comment.');
+                }
+            });
+        }
+        function showOptions(commentId) {
+            var optionsDiv = $('#options_' + commentId);
+            optionsDiv.toggleClass('show-options');
+        }
+        function deleteComment(commentId) {
+            var confirmDelete = confirm('Bạn chắc chắn muốn xóa bình luận này?');
+            if (confirmDelete) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/comments/' + commentId,
+                    type: 'DELETE',
+                    success: function () {
+                        $('#options_' + commentId).remove();
+                        alert('Xóa Thành Công !');
+                    },
+                    error: function () {
+                        alert('Failed to delete the comment.');
+                    }
+                });
+            } else {
+                console.log('Deletion canceled.');
+            }
+        }
+        
+        function updateComment(commentId) {
+            var updatedComment = $('#commentid_' + commentId).val();
+            var userId = $('#userId').text();
+            var commentUpdateData = {
+                'userId': userId,
+                'postId': postId,
+                'content': updatedComment
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/comments/' + commentId,
+                type: 'PUT',
+                data: JSON.stringify(commentUpdateData),
+                contentType: 'application/json',
+                success: function (updatedCommentData) {
+                    $('#options_' + commentId + ' .comment-info').val(updatedCommentData.content);
+                    alert('Cập Nhật Thành Công !');
+                },
+                error: function () {
+                    alert('Failed to update the comment.');
+                }
+            });
+        }
+        
+        
+        
         $(document).ready(function () {
             var postIdToDisplay = window.location.pathname.split('/').pop();
             var commentSection = $('#commentsSection');
@@ -89,6 +168,7 @@
                 var isUserPost = post.user.userId === userId;
                 var isAdmin = userRole.includes('ROLE_ADMIN');
                 var postContainer = $('#postContainer');
+                postId = post.postId;
                 var postCard = '<div class="card1">' +
                     '<h3>' + post.user.username + '</h3>' +
                     '<p>Email: ' + post.user.email + '</p>' +
@@ -96,9 +176,9 @@
                     '<p>Content: ' + post.content + '</p>' +
                     '<p>Created At: ' + post.createdAt + '</p>' +
                     '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                    '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                    '<button type="button" class="three-dots-button">...</button>';
+                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>' +
+                    '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
+                    '<button type="button" class="three-dots">...</button>';
                         
                 if ((userRole.includes('ROLE_USER') && isUserPost) || isAdmin) {
                     var editButton = '<button type="button" class="edit-button" data-post-id="' + post.postId + '">Chỉnh Sửa Bài Viết</button>';
@@ -130,7 +210,7 @@
                     toggleComments(postId);
                 });
     
-                $('.three-dots-button').click(function () {
+                $('.three-dots').click(function () {
                     $(this).closest('.card1').toggleClass('show-buttons');
                 });
     
@@ -159,21 +239,37 @@
             
 
             function displayComments(comments) {
+                var userRole = $('#roles').text();
+                var userId = parseInt($('#userId').text());
                 commentList.empty();
-
+            
                 comments.forEach(function (comment) {
+                    var formattedDate = new Date(comment.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
                     var commentItem = '<div class="comment-item">' +
-                        '<p>Comment ID: ' + comment.commentId + '</p>' +
-                        '<p>Username: ' + comment.user.username + '</p>' +
-                        '<p>Email: ' + comment.user.email + '</p>' +
-                        '<p>Content: ' + comment.content + '</p>' +
-                        '<p>Created At: ' + comment.createdAt + '</p>' +
+                        '<div class="userwrapper">' +
+                        '<h3>' + comment.user.username + '</h3>' +
+                        '<h4>-' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>Bình luận:</p>' +
+                        '<input type="text" class="comment-info" value="' + comment.content + '" id="commentid_' + comment.commentId + '">' +
+                        '<button type="button" class="three-dots-button" onclick="$(\'#options_' + comment.commentId + '\').toggleClass(\'show-options\')">...</button>' +
+                        '<div class="comment-options" id="options_' + comment.commentId + '">';
+            
+                    if ((userRole.includes('ROLE_USER') && comment.user.userId === userId) || userRole.includes('ROLE_ADMIN')) {
+                        var deleteButton = '<button type="button" onclick="deleteComment(' + comment.commentId + ')">Xóa bình luận</button>';
+                        var updateButton = '<button type="button" onclick="updateComment(' + comment.commentId + ')">Cập nhật</button>';
+                        commentItem += deleteButton + updateButton;
+                    }
+            
+                    commentItem += '</div>' +
                         '</div>';
-
+            
                     commentList.append(commentItem);
                 });
             }
-
+            
+            
+            
             function likePost(postId) {
                 console.log('Liked post with ID: ' + postId);
             }
