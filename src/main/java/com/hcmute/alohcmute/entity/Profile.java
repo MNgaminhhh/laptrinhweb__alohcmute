@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hcmute.alohcmute.enums.Gender;
 
 @Data
@@ -18,9 +19,10 @@ public class Profile {
     @Column(name = "user_ID")
     private Long userId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "user_ID")
+    @JsonBackReference
     private User user;
 
     @Column(name = "first_Name")
