@@ -64,15 +64,9 @@ public class ApiFriendshipController {
         }
     }
 
-    // @PostMapping("/edit/{friendshipId}")
-    // public ResponseEntity<Friendship> editFriendship(@PathVariable Long id, @RequestBody Friendship friendship) {
-    //     Friendship newFriendship = friendshipService.editFriendship(id, friendship);
-    //     return new ResponseEntity<>(newFriendship, HttpStatus.CREATED);
-    // }
-
-    @DeleteMapping("/delete/{friendshipId}")
-    public ResponseEntity<Void> deleteFriendship(@PathVariable Long id) {
-        friendshipService.deleteFriendship(id);
+    @DeleteMapping("/delete/")
+    public ResponseEntity<Void> deleteFriendship(@PathParam("userId1") Long userId1, @PathParam("userId2") Long userId2) {
+        friendshipService.deleteFriendship(userId1, userId2);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

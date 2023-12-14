@@ -49,7 +49,7 @@ function addFriendship(user1_id, user2_id, status){
         contentType: 'application/json',
         data: JSON.stringify(newFriendships),
         success: function(response) {
-            alert("Đã gửi lời mời kết bạn!")
+            
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -66,7 +66,21 @@ function updateStatus(user1_id, user2_id, status) {
         url: 'http://localhost:1999/api/friendship/edit-status/?userId1='+user1+'&userId2='+user2+'&status='+friendship_status,
         type: 'PUT',
         success: function() {
-            alert("Đã chấp nhận lời mời kết bạn");
+        },
+        error: function(error) {
+            console.log(error.responseJSON.message)
+        }
+    })
+    alert("Đã chấp nhận lời mời kết bạn");
+}
+
+function deleteFriendship(user1_id, user2_id) {
+    var user1 = user1_id;
+    var user2 = user2_id;
+    $.ajax({
+        url: 'http://localhost:1999/api/friendship/delete/?userId1='+user1+'&userId2='+user2,
+        type: 'DELETE',
+        success: function() {
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -122,25 +136,23 @@ function loadRequested() {
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
                 + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
-                + '<button class="btn btn-add btn-primary" id="decline"'+friend.userId+'">Từ chối</button>'
+                + '<button class="btn btn-add btn-primary" id="decline'+friend.userId+'">Từ chối</button>'
                 +  '</div></div>';
             $(".container1").append(card);
             $("#accepted"+friend.userId).click(function() {
-                console.log("clickkkkk")
                 var userId1 = $("#userId").text();
                 var userId2 = friend.userId;
                 var status = 'ACCEPTED';
                 updateStatus(userId1, userId2, status);
                 updateStatus(userId2, userId1, status);
             })
-            // $("#decline"+friend.userId).click(function() {
-            //     console.log("clickkkkk")
-            //     var userId1 = $("#userId").text();
-            //     var userId2 = friend.userId;
-            //     var status = 'ACCEPTED';
-            //     updateStatus(userId1, userId2, status);
-            //     updateStatus(userId2, userId1, status);
-            // })
+            $("#decline"+friend.userId).click(function() {
+                console.log("delete");
+                var userId1 = $("#userId").text();
+                var userId2 = friend.userId;
+                deleteFriendship(userId1, userId2);
+                deleteFriendship(userId2, userId1);
+            })
         }
     }
 }
