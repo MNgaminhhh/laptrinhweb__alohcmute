@@ -50,7 +50,7 @@ public class SecurityConfig {
 
         return http.csrf().disable() 
             .authorizeHttpRequests() 
-            .requestMatchers("/api/addNewUser", "/api/generateToken", "/css/**", "/images/**", "/register","/api/posts","/","/api/users").permitAll() 
+            .requestMatchers("/api/forgot-password","/api/addNewUser", "/api/generateToken", "/css/**", "/images/**", "/register","/api/posts","/","/api/users").permitAll() 
             .requestMatchers("/user/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/user/profileuser","/user/profile/**").authenticated() 
             .requestMatchers("/admin/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/admin/users/profileuser","/admin/users/profiles/**").authenticated() 
             .and() 
