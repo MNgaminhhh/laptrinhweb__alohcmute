@@ -106,7 +106,17 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
+  .post-header {
+    display: flex;
+    align-items: center;
+  }
   
+  .post-header h3 {
+    margin-right: 5px;
+  }
+  .post-header h4 {
+    color: #696969;
+  }
   .card h3 {
     margin-bottom: 10px;
     color: #333;

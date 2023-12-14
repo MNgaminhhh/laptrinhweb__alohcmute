@@ -21,10 +21,10 @@
         <div sec:authorize="isAuthenticated()">
             <div class="user-info-card" sec:authorize="isAuthenticated()">
                 <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                <h2>User Information</h2>
-                <p>Logged user: <span sec:authentication="name"> </span></p>
-                <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
-                <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                <br>
+                <p>Tên tài khoản: <span sec:authentication="name"> </span></p>
+                <p style="display: none;">Roles: <span sec:authentication="principal.authorities"> </span></p>
+                <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
             </div>  
         </div>        
         <div class="menu">

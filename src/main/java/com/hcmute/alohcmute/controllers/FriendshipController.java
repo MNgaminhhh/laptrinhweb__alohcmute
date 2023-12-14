@@ -29,4 +29,8 @@ public class FriendshipController {
         model.addAttribute("topic", "add_friend");
         return "friendship/friendship";
     }
+    @GetMapping("/friend/profile/{userId}")
+    public String showUserProfileFriend(Model model, @PathVariable(value = "userId") Long userId) {
+        return "user/profileuserfriend";
+    }
 }

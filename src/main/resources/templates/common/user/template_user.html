@@ -8,7 +8,6 @@
             <div class="left">
             </div>
             <div class="rightHeader">
-                <a href="/contact" class="link">Liên Hệ</a>
                 <div sec:authorize="isAuthenticated()">
                     <a href="/logout" class="link">Đăng Xuất</a>
                 </div>
@@ -19,8 +18,9 @@
         </div>
     </div>
   </div>
-</nav>
 </header>
+
+
 <body>
   <nav class="user-left" th:fragment="user-left">
     <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
@@ -28,6 +28,8 @@
     </div>
   </nav>
 </body>
+
+
 <!-- Footer -->
 <footer>
     <div class="container-footer">

@@ -1,5 +1,6 @@
 package com.hcmute.alohcmute.apicontroller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,8 +9,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import com.hcmute.alohcmute.Dto.AuthRequest;
+import com.hcmute.alohcmute.Dto.ResetPasswordRequest;
+import com.hcmute.alohcmute.entity.PasswordResetToken;
 import com.hcmute.alohcmute.entity.User;
+import com.hcmute.alohcmute.service.EmailService;
 import com.hcmute.alohcmute.service.JwtService;
+import com.hcmute.alohcmute.service.PasswordResetTokenService;
 import com.hcmute.alohcmute.service.UserService;
 
 import jakarta.servlet.http.Cookie;
@@ -21,6 +26,10 @@ public class ApiLoginController {
     
     @Autowired
     private UserService service;
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private JwtService jwtService; 
@@ -59,8 +68,38 @@ public class ApiLoginController {
                 throw new UsernameNotFoundException("Invalid user credentials!");
             }
         } catch (Exception e) {
-            // Handle authentication failure
             return ResponseEntity.status(401).body("Invalid username or password");
         }
     }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        try {
+            User user = service.getUserByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+
+            String token = passwordResetTokenService.createPasswordResetToken(user);
+
+            emailService.sendPasswordResetEmail(user.getEmail(), token);
+
+            return ResponseEntity.ok("Password reset email sent successfully.");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to initiate password reset.");
+        }
+    }
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        try {
+            String email = passwordResetTokenService.getEmailFromToken(token);
+            service.resetPassword(email, resetPasswordRequest.getNewPassword());
+            passwordResetTokenService.deleteToken(token);
+            return ResponseEntity.ok("Đặt lại mật khẩu thành công.");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đặt lại mật khẩu thất bại.");
+        }
+    }
+    
 }

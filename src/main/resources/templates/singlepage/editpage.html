@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Trang Chủ | ALOHCMUTE</title>
+    <title>Chỉnh Sửa Bài Đăng | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link th:href="@{../../css/page/editpage.css}" rel="stylesheet">
     <link th:href="@{../../css/style.css}" rel="stylesheet">
@@ -37,23 +37,50 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span sec:authentication="name"> </span></p>
-                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
-                    </div>
-                </div>
+                        <br>
+                        <p>Tên tài khoản: <span sec:authentication="name"> </span></p>
+                        <p style="display: none;">Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                    </div>  
+                </div>        
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
                     </div>
                 </a>
-                <a href="tinnhan.html">
-                    <div class="card">
-                        <h3>Tin nhắn</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>  
+                
                 <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                     <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
                         <div class="card">
@@ -61,14 +88,14 @@
                         </div>
                     </a>
                 </div>
-
+                
                 <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
                         <div class="card">
                             <h3>Trang cá nhân</h3>
                         </div>
                     </a>
-                </div>
+                </div>  
             </div>
         </div>
     </div>
@@ -176,6 +203,7 @@
                         contentType: 'application/json',
                         success: function (updatedPost) {
                             console.log('Post updated successfully:', updatedPost);
+                            window.location.href = "/";
                         },
                         error: function () {
                             alert('Failed to update post.');
