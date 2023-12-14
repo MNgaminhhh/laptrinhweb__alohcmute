@@ -95,7 +95,7 @@ function populateUserData(data, id) {
     $(".user-group").append(`<div class="conversation_id" id="`+id+`"><div class="card mb-3 card-profile" id="card-of-user`+friend.userId+`" style="max-width: 540px;">
                                 <div class="row g-0">
                                 <div class="col-md-4">
-                                    <img src="https://img.hoidap247.com/picture/question/20200508/large_1588936738888.jpg" class="img-fluid rounded-start" alt="...">
+                                    <img src="http://localhost:1999/images/hcmute.png" class="img-fluid rounded-start" alt="...">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
@@ -124,7 +124,7 @@ function loadFriend() {
     })
     function loadData(data) {
         for (friend of data) {
-            $("#list-friend").append('<li class="friend" id="card-friend'+friend.userId+'"><img src="https://img.hoidap247.com/picture/question/20200508/large_1588936738888.jpg" alt="Avatar" width="50" height="50">'+
+            $("#list-friend").append('<li class="friend" id="card-friend'+friend.userId+'"><img src="http://localhost:1999/images/hcmute.png" alt="Avatar" width="50" height="50">'+
             '<span>'+friend.firstName+" "+friend.lastName+'</span></li>')
         }
     }

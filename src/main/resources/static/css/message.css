@@ -1,95 +1,135 @@
-
+/* User Group */
 .user-group {
-    display: flex;
-    flex-direction: column;
-    
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 60vh;
+  border: 1px solid #bdc3c7;
+  overflow-y: auto;
+  padding: 20px;
 }
 
+/* Chat Area */
 .chat-area {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  } 
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
 .chat-area header {
-    background-color: aqua;
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
 }
 
+/* Card Information */
 .card-inf {
-    height: 100px;
-    width: 300px;
-    display: flex;
-    flex-direction: row;
+  height: 100px;
+  width: 300px;
+  display: flex;
+  flex-direction: row;
 }
-
-.message-area {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-  }
 
 .card-inf img {
-    border-radius: 50px;
-    height: 100%;
-    margin-left: 10px;
-    width: auto;
+  border-radius: 50px;
+  height: 100%;
+  margin-left: 10px;
+  width: auto;
 }
 
+/* Message Area */
+.message-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+/* New Message Button */
 .new-msg {
   width: 100%;
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
 }
 
+/* Dropdown Menu */
 .dropdown-menu {
   width: 100%;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
 }
 
+.dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #ecf0f1;
+}
+
+/* Profile Name */
 .profile-name {
-    align-self: auto;
-    float: right;
-    margin-bottom: 0;
-    margin-top: 25px;
-    margin-left: 10px;
-    text-align: center;
+  align-self: auto;
+  float: right;
+  margin-bottom: 0;
+  margin-top: 25px;
+  margin-left: 10px;
+  text-align: center;
 }
 
-
-.card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f8f9fa;
-    cursor: pointer;
+/* Expanding Div */
+.expanding-div {
+  width: 100%;
+  height: 60vh;
+  border: 1px solid #bdc3c7;
+  overflow-y: auto;
+  padding: 20px;
 }
 
+/* Content */
+.content {
+  padding: 10px;
+}
+
+/* Hover Effect for Cards and Friends */
+.card:hover,
 .friend:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #f8f9fa;
   cursor: pointer;
 }
 
+/* Chat Container */
 #chat-container {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    background-color: #fff;
-    margin-left: 20px;
-  }
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  margin-left: 20px;
+}
 
-  #chat-area {
-    width: 100%;
-    resize: none;
-  }
+#chat-area {
+  width: 100%;
+  resize: none;
+}
 
-  #send-btn {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+#send-btn {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  footer {
-    margin-top: auto;
-  }
+/* Footer */
+footer {
+  margin-top: 800px;
+}

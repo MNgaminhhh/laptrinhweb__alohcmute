@@ -92,7 +92,6 @@ function updateStatus(user1_id, user2_id, status) {
             console.log(error.responseJSON.message)
         }
     })
-    alert("Đã chấp nhận lời mời kết bạn");
 }
 
 function deleteFriendship(user1_id, user2_id) {
@@ -128,7 +127,7 @@ function loadFriend() {
                         populateUserData(data);
                     },
                     error: function() {
-                        alert('Failed to fetch user data.');
+                       
                     }
                 });
             }
@@ -142,6 +141,7 @@ function populateUserData(data) {
         '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">' +
         '<div class="card-body">' +
         '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p>'+
+        '<a href="http://localhost:1999/friendships/friend/profile/' + friend.userId + '" class="btn btn-add btn-primary profile-link">Trang Cá Nhân</a>'+
         '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa bạn</button></div></div>';
     $("#friendshipForm").append(card);
     $("#delete"+friend.userId).click(function() {
@@ -173,7 +173,7 @@ function loadRequested() {
                         populateReuqested(data);
                     },
                     error: function() {
-                        alert('Failed to fetch user data.');
+                       
                     }
                 });
             }
@@ -219,7 +219,7 @@ function loadAddFriend() {
             populateUserData(data)
         },
         error: function () {
-            alert('Failed to fetch user data.');
+           
         }
     });
 
