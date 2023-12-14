@@ -1,17 +1,41 @@
 <!-- Navigation -->
-<div th:fragment="header">
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<h1>headeradmin</h1>
-		</div>
-	</nav>
-</div>
+<header>
+    <div class="container">
+        <div class="wrapper">
+            <div class="right">
+                <a href="/"><img th:src="@{/images/logo.png}" width="155" height="70" class="img" alt=""></a>
+            </div>
+            <div class="left">
+            </div>
+            <div class="rightHeader">
+                <a href="/admin" class="link">Quản Trị</a>
+                <a href="/contact" class="link">Liên Hệ</a>
+                <div sec:authorize="isAuthenticated()">
+                    <a href="/logout" class="link">Đăng Xuất</a>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <a href="/login" class="link">Đăng Nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
-<div th:fragment="footer">
-	<footer class="py-5 bg-dark">
-		<div class="container">
-			<p class="m-0 text-center text-white">Copyright &copy; Spring
-				eCommerce 2021</p>
-		</div>
-	</footer>
-
-</div>
+<footer>
+    <div class="containerfooter">
+        <div class="footer">
+            <div class="wrappeer">
+                <div class="col">
+                    <h2>Về Alohcmute</h2>
+                    <p>Chào mừng bạn đến với Alohcmute - nền tảng chia sẻ và kết nối cộng đồng. Tại đây, chúng ta cùng nhau trải nghiệm, chia sẻ và tạo ra những khoảnh khắc đáng nhớ. Dù ở bất kỳ đâu, chúng ta luôn gần kề nhau thông qua Alohcmute.</p>
+                </div>
+                <div class="col">
+                    <h2>Liên Hệ</h2>
+                    <span>Email: your_email@example.com</span>
+                    <span>Điện thoại: +123-456-7890</span>
+                </div>
+            </div>
+            <p>© 2023 Alohcmute. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>

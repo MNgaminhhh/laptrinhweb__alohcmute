@@ -56,4 +56,19 @@ public class ApiUserController {
         return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
+        Optional<User> existingUser = userService.getUserById(userId);
+
+        if (existingUser.isPresent()) {
+            User userToUpdate = existingUser.get();
+            userToUpdate.setUsername(updatedUser.getUsername());
+            userToUpdate.setEmail(updatedUser.getEmail());
+            userToUpdate.setIsAdmin(updatedUser.getIsAdmin());
+            User savedUser = userService.saveUser(userToUpdate);
+            return new ResponseEntity<>(savedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

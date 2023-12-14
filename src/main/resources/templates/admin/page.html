@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang Quản Trị | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link th:href="@{css/style.css}" rel="stylesheet">
+    <link th:href="@{css/footer.css}" rel="stylesheet">
+    <link th:href="@{css/admin/adminpage.css}" rel="stylesheet">
+
+</head>
+<body>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+    <div class="containeradmin"> 
+        <h1>Trang Quản Trị</h1>
+        <div sec:authorize="isAuthenticated()">
+            <div class="user-info-card" sec:authorize="isAuthenticated()">
+                <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                <h2>User Information</h2>
+                <p>Logged user: <span sec:authentication="name"> </span></p>
+                <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
+                <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+            </div>  
+        </div>        
+        <div class="menu">
+            
+            <a href="/admin/users">
+                <div class="card">
+                    <h3>Quản Lý Tài Khoản</h3>
+                </div>
+            </a>
+            <a href="tinnhan.html">
+                <div class="card">
+                    <h3>Tin nhắn</h3>
+                </div>
+            </a>
+            <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>
+            
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                    <div class="card">
+                        <h3>Trang cá nhân</h3>
+                    </div>
+                </a>
+            </div>  
+        </div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+
+</body>
+</html>

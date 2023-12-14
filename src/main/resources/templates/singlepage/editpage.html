@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link th:href="@{../../css/page/editpage.css}" rel="stylesheet">
+    <link th:href="@{../../css/style.css}" rel="stylesheet">
+    <link th:href="@{../../css/footer.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+    <div class="container1">
+        <div class="content">
+            <div class="post">
+                <div id="postContainer">
+                </div>
+                <h2>Chọn ảnh mới</h2>
+                <div class="image-preview" id="imagePreview">
+                    <label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+                    Drag and drop image here or click to upload
+                    </label>
+                    <input type="file" id="uploadImage"  accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                </div>
+                <button type="button" class="upload-button" onclick="uploadImage()">Upload Image</button>
+                <button type="button" class="delete-button" onclick="removeUploadedImage()">Delete Image</button>
+                
+            </div>
+            <div class="menu">
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2>User Information</h2>
+                        <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                    </div>
+                </div>
+                <h2>Menu</h2>
+                <a href="/">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <a href="tinnhan.html">
+                    <div class="card">
+                        <h3>Tin nhắn</h3>
+                    </div>
+                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+
+    <script>
+        var indeximage = '';
+        function handleFileSelect(event) {
+            event.preventDefault();
+            var files = event.target.files || event.dataTransfer.files;
+        
+            if (files.length > 0) {
+                displayImageInLabel(files[0]);
+            }
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            $('#uploadImageLabel').addClass('drag-over');
+        }
+        
+        function displayImageInLabel(file) {
+            var reader = new FileReader();
+        
+            reader.onload = function (e) {
+                $('#uploadImageLabel').css('background-image', 'url(' + e.target.result + ')');
+                $('#uploadImageLabel').removeClass('drag-over');
+            };
+        
+            reader.readAsDataURL(file);
+        }
+        
+        function removeUploadedImage() {
+            $('#uploadImageLabel').css('background-image', '');
+            $('#uploadImage').val('');
+        }
+        
+        function uploadImage() {
+            var imageInput = $('#uploadImage')[0].files[0];
+            var formData = new FormData();
+            formData.append('file', imageInput);
+
+            $.ajax({
+                url: 'http://localhost:1999/api/upload',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    alert('Image uploaded successfully. Image URL: ' + data);
+                    indeximage = data;
+                    displayImage(data);
+                },
+                error: function () {
+                    alert('Failed to upload image.');
+                }
+            });
+        }
+        function displayImage(imageUrl) {
+            $('#uploadedImage').attr('src', imageUrl);
+            $('#uploadedImage').show();
+        }
+        $(document).ready(function () {
+            var postIdToDisplay = window.location.pathname.split('/').pop();
+            var postContainer = $('#postContainer');
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/posts/' + postIdToDisplay,
+                type: 'GET',
+                success: function (data) {
+                    displaySinglePost(data);
+                },
+                error: function () {
+                    alert('Failed to fetch post data.');
+                }
+            });
+        
+            function displaySinglePost(post) {
+                document.title = `${post.content} | ALOHCMUTE`;
+                var postCard = '<div class="user-account-info">' +
+                    '<h1>Chỉnh Sửa Bài Viết</h1>' +
+                    '<form class="card1">' +
+                    '<label for="content">Content:</label>' +
+                    `<textarea id="content">${post.content}</textarea>` +
+                    `<img id="previewImage" src="${post.images[0].filePath}" alt="Post Image" class="img-file">` +
+                    '<button type="button" class="update-button" data-post-id="' + post.postId + '">Cập Nhật</button>' +
+                    '</form>';
+                postCard += '</div>';
+                postContainer.append(postCard);
+                indeximage = post.images[0].filePath;
+                $('.update-button').click(function () {
+                    var updatedContent = $('#content').val();
+                    var postId = $(this).data('post-id');
+                    
+                    var updatedData = {
+                        'content': updatedContent,
+                        'imageUrl': indeximage,
+                        'postId': postId
+                    };
+                
+                    $.ajax({
+                        url: 'http://localhost:1999/api/posts/update/' + postId, 
+                        type: 'PUT',
+                        data: JSON.stringify(updatedData),
+                        contentType: 'application/json',
+                        success: function (updatedPost) {
+                            console.log('Post updated successfully:', updatedPost);
+                        },
+                        error: function () {
+                            alert('Failed to update post.');
+                        }
+                    });
+                });
+                
+            }
+        });
+        
+    </script>
+</body>
+
+</html>

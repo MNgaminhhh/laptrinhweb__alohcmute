@@ -23,13 +23,14 @@ public class Post {
     @JoinColumn(name = "user_ID", nullable = false)
     private User user;
 
+    @Column(length = 5000)
     private String content;
 
     @Column(name = "created_At")
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "post")
-    @JsonManagedReference
+    @JsonManagedReference  
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post")

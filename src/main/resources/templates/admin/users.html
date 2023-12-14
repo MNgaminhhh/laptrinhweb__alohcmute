@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang Quản Lý Tài Khoản | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link th:href="@{../css/style.css}" rel="stylesheet">
+    <link th:href="@{../css/footer.css}" rel="stylesheet">
+    <link th:href="@{../css/admin/adminuser.css}" rel="stylesheet">
+
+</head>
+<body>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+    <div class="containeradmin"> 
+        <h1>Quản Lý Tài Khoản</h1>
+        
+        <div class="menu" id="userListContainer">
+            
+        </div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/api/users',
+                type: 'GET',
+                success: function(users) {
+                    displayUserList(users);
+                },
+                error: function(error) {
+                    console.error('Error fetching user information:', error);
+                }
+            });
+    
+            function displayUserList(users) {
+                var userListContainer = $('#userListContainer');
+                userListContainer.empty();
+    
+                users.forEach(function(user) {
+                    var userCard = $('<div class="user-card">');
+                    userCard.append('<h3>' + user.username + '</h3>');
+                    userCard.append('<p>Email: ' + user.email + '</p>');
+                    userCard.append('<p>Created At: ' + user.createdAt + '</p>');
+    
+                    userCard.append('<a class="update-btn" href="/admin/users/' + user.userId + '">Trang Cá Nhân</a>');
+    
+                    userCard.append('<a class="update-btn" href="/admin/users/edit/' + user.userId + '">Chỉnh Sửa</a>');
+    
+                    userListContainer.append(userCard);
+                });
+    
+                userListContainer.on('click', '.delete-btn', function() {
+                    var userId = $(this).data('user-id');
+                    console.log('Delete user with ID:', userId);
+                });
+            }
+        });
+    </script>
+    
+</body>
+</html>

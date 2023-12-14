@@ -13,43 +13,47 @@
 </head>
 
 <body>
-    <div th:insert="~{common/user/template_user.html::header}"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+
     <div class="container1">
         <div class="content">
 
             <div class="post" id="postContainer">
-
-                <div class="post-form" id="postForm">
-                    <div class="card">
-						<h2>Post</h2>
-						<textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-					
-						<div class="image-preview" id="imagePreview">
-							<label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
-								Drag and drop image here or click to upload
-							</label>
-							<input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-						</div>
-						
-						
-						<br>
-						<button type="button" onclick="removeUploadedImage()">Remove Image</button>
-						<button type="button" onclick="uploadImage()">Upload Image</button>
-						<br>
-						<button type="button" onclick="submitPost()">Post</button>
-					</div>
-					
-					
+                <div class="post-button-container" sec:authorize="isAuthenticated()">
+                    <button class="post-button" onclick="togglePostForm()">Đăng Bài</button>
                 </div>
+                      
+                <div class="post-form" id="postForm" style="display: none;">
+                    <div class="card">
+                        <h2>Post</h2>
+                        <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
 
+                        <div class="image-preview" id="imagePreview">
+                            <label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
+                                Drag and drop image here or click to upload
+                            </label>
+                            <input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                        </div>
+                        <br>
+                        <button type="button" onclick="removeUploadedImage()">Remove Image</button>
+                        <button type="button" onclick="uploadImage()">Upload Image</button>
+                        <br>
+                        <button type="button" onclick="submitPost()">Post</button>
+                    </div>
+                </div>
             </div>
             <div class="menu">
-                 
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
                         <h2>User Information</h2>
                         <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
                         <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
@@ -64,23 +68,35 @@
                         <h3>Tin nhắn</h3>
                     </div>
                 </a>
-                <a href="trangcanhan.html">
-                    <div class="card">
-                        <h3>Trang cá nhân</h3>
-                    </div>
-                </a>
                 <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
                     <div class="card">
                         <h3>Bạn bè</h3>
                     </div>
                 </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>  
             </div>
-            
         </div>
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
     <script>
         var uploadedImageUrl = '';
+        function togglePostForm() {
+            $('#postForm').toggle();
+        }
 		function handleFileSelect(event) {
 			event.preventDefault();
 			var files = event.target.files || event.dataTransfer.files;
@@ -170,11 +186,6 @@
                 alert('Please select an image.');
             }
         }
-        
-        
-        
-        
-
         $(document).ready(function () {
             $.ajax({
                 url: 'http://localhost:1999/api/posts',
@@ -189,21 +200,27 @@
         
             function populatePostData(posts) {
                 var postContainer = $('#postContainer');
-        
+                
                 for (var post of posts) {
+                    var formattedDate = new Date(post.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+                    var truncatedContent = post.content.length > 300 ? post.content.substring(0, 300) + '...' : post.content;
+                
                     var postCard = '<a href="http://localhost:1999/post/' + post.postId + '" class="card1">' +
+                        '<div class="post-header">' +
                         '<h3>' + post.user.username + '</h3>' +
-                        '<p>Email: ' + post.user.email + '</p>' +
-                        '<p>Post ID: ' + post.postId + '</p>' +
-                        '<p>Content: ' + post.content + '</p>' +
-                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<h4>' + ' - ' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>' + truncatedContent + '</p>' +
                         '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
                         '</a>';
-        
+                
                     postContainer.append(postCard);
                 }
+                
+                
+                
         
                 $('.like-button').click(function () {
                     var postId = $(this).data('post-id');

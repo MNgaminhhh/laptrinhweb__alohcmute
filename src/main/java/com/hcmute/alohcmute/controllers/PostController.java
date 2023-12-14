@@ -10,5 +10,8 @@ public class PostController {
     public String showSinglePost(@PathVariable Long postId, Model model) {
         return "singlepage/page";
     }
-    
+    @GetMapping("/post/edit/{postId}")
+    public String editSinglePost(@PathVariable Long postId, Model model) {
+        return "singlepage/editpage";
+    }
 }

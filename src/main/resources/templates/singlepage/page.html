@@ -11,7 +11,12 @@
 </head>
 
 <body>
-    <div th:include="common/user/template_user.html::header"></div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
     <div class="container1">
         <div class="content">
             <div class="post">
@@ -20,13 +25,23 @@
                 <div id="commentsSection" style="display: none;">
                     <h2>Comments</h2>
                     <div id="commentForm">
-                    <div id="commentList"></div>
-                        <textarea id="newComment" placeholder="Add a comment"></textarea>
-                        <button type="button" id="addCommentBtn">Add Comment</button>
+                    <div class="commentFormInput" id="commentList"></div>
+                        <h2>Viết Bình Luận</h2>
+                        <textarea id="newComment" placeholder="Thêm một bình luận..."></textarea>
+                        <button type="button" id="addCommentBtn" onclick="postComment()">Đăng Bình Luận</button>
                     </div>
                 </div>
             </div>
             <div class="menu">
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2>User Information</h2>
+                        <p>Logged user: <span sec:authentication="name"> </span></p>
+                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                    </div>  
+                </div>  
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
@@ -38,23 +53,109 @@
                         <h3>Tin nhắn</h3>
                     </div>
                 </a>
-                <a href="trangcanhan.html">
-                    <div class="card">
-                        <h3>Trang cá nhân</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>  
             </div>
         </div>
     </div>
-    <div th:include="common/user/template_user.html::footer"></div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
 
     <script>
+        var postId = '';
+        function postComment() {
+            var commentContent = $('#newComment').val().trim();
+            var userId = $('#userId').text();
+
+            if (commentContent === '') {
+                alert('Vui lòng nhập bình luận ...');
+                return;
+            }
+            var commentData = {
+                'userId': userId,
+                'postId': postId,
+                'content': commentContent
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/comments/add',
+                type: 'POST',
+                data: JSON.stringify(commentData),
+                contentType: 'application/json',
+                success: function (newComment) {
+                    console.log('Commets created successfully:');
+                    window.location.href = '/post/' + postId;
+                },
+                error: function () {
+                    alert('Failed to add comment.');
+                }
+            });
+        }
+        function showOptions(commentId) {
+            var optionsDiv = $('#options_' + commentId);
+            optionsDiv.toggleClass('show-options');
+        }
+        function deleteComment(commentId) {
+            var confirmDelete = confirm('Bạn chắc chắn muốn xóa bình luận này?');
+            if (confirmDelete) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/comments/' + commentId,
+                    type: 'DELETE',
+                    success: function () {
+                        $('#options_' + commentId).remove();
+                        alert('Xóa Thành Công !');
+                    },
+                    error: function () {
+                        alert('Failed to delete the comment.');
+                    }
+                });
+            } else {
+                console.log('Deletion canceled.');
+            }
+        }
+        
+        function updateComment(commentId) {
+            var updatedComment = $('#commentid_' + commentId).val();
+            var userId = $('#userId').text();
+            var commentUpdateData = {
+                'userId': userId,
+                'postId': postId,
+                'content': updatedComment
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/comments/' + commentId,
+                type: 'PUT',
+                data: JSON.stringify(commentUpdateData),
+                contentType: 'application/json',
+                success: function (updatedCommentData) {
+                    $('#options_' + commentId + ' .comment-info').val(updatedCommentData.content);
+                    alert('Cập Nhật Thành Công !');
+                },
+                error: function () {
+                    alert('Failed to update the comment.');
+                }
+            });
+        }
+        
+        
+        
         $(document).ready(function () {
             var postIdToDisplay = window.location.pathname.split('/').pop();
             var commentSection = $('#commentsSection');
             var commentList = $('#commentList');
-            var commentForm = $('#commentForm');
-            var postContainer = $('#postContainer');
             var commentsVisible = false;
 
             $.ajax({
@@ -70,6 +171,15 @@
 
             function displaySinglePost(post) {
                 document.title = post.content + " | ALOHCMUTE";
+                var userId = parseInt($('#userId').text());
+                var userRole = $('#roles').text();
+                var isUserPost = post.user.userId === userId;
+                var isAdmin = userRole.includes('ROLE_ADMIN');
+                var postContainer = $('#postContainer');
+                postId = post.postId;
+                var isLiked = isLikedPost(post);
+                var likeButton = '<button type="button" class="like-button ' + (isLiked ? 'hidden' : '') + '" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>';
+                var likedButton = '<button type="button" class="liked-button ' + (isLiked ? '' : 'hidden') + '" data-post-id="' + post.postId + '">Đã thích (' + post.likes.length + ')</button>';
                 var postCard = '<div class="card1">' +
                     '<h3>' + post.user.username + '</h3>' +
                     '<p>Email: ' + post.user.email + '</p>' +
@@ -77,42 +187,197 @@
                     '<p>Content: ' + post.content + '</p>' +
                     '<p>Created At: ' + post.createdAt + '</p>' +
                     '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                    '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                    '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                    '</div>';
+                    likeButton +
+                    likedButton +
+                    '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
+                    '<button type="button" class="three-dots">...</button>';
+            
+                if ((userRole.includes('ROLE_USER') && isUserPost) || isAdmin) {
+                    var editButton = '<button type="button" class="edit-button" data-post-id="' + post.postId + '">Chỉnh Sửa Bài Viết</button>';
+                    var deleteButton = '<button type="button" class="delete-button" data-post-id="' + post.postId + '">Xóa Bài Viết</button>';
+            
+                    postCard += '<div class="edit-delete-buttons">' + editButton + deleteButton + '</div>';
+                }
+                
+                postCard += '</div>';
                 postContainer.append(postCard);
+                checkLike(postId);
+
                 $('.like-button').click(function () {
                     var postId = $(this).data('post-id');
+                    
                     likePost(postId);
                 });
-                
+            
+                $('.liked-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    unlikePost(postId);
+                });
+            
+                $('.edit-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    editPost(postId);
+                });
+            
+                $('.delete-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    deletePost(postId);
+                });
+            
                 $('.comment-button').click(function () {
                     var postId = $(this).data('post-id');
                     toggleComments(postId);
                 });
+            
+                $('.three-dots').click(function () {
+                    $(this).closest('.card1').toggleClass('show-buttons');
+                });
+            
                 displayComments(post.comments);
+            
+                function isLikedPost(post) {
+                    var userId = parseInt($('#userId').text());
+                    return post.likes.some(function (like) {
+                        return like.userId === userId;
+                    });
+                }
+                
+            }
+            function checkLike(postId){
+                var userId = $('#userId').text();
+                var checkLikeUrl = 'http://localhost:1999/api/like/check-like?userId=' + userId + '&postId=' + postId;
+                
+                $.ajax({
+                    url: checkLikeUrl,
+                    type: 'GET',
+                    success: function (isLiked) {
+                        if (isLiked) {
+                            $(`.like-button[data-post-id="${postId}"]`).addClass('hidden');
+                            $(`.liked-button[data-post-id="${postId}"]`).removeClass('hidden');
+                        } else {
+                            $(`.liked-button[data-post-id="${postId}"]`).addClass('hidden');
+                            $(`.like-button[data-post-id="${postId}"]`).removeClass('hidden');
+                        }
+                    },
+                    error: function () {
+                        console.error('Failed to check like status.');
+                    }
+                });
+            }
+            
+            
+            function likePost(postId) {
+                var userId = $('#userId').text();
+                var likepost = {
+                    'userId': userId,
+                    'postId': postId,
+                };
+            
+                $.ajax({
+                    url: 'http://localhost:1999/api/like/' + postId,
+                    type: 'POST',
+                    data: JSON.stringify(likepost),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log('Liked post with ID: ' + postId);
+                        $(`.like-button[data-post-id="${postId}"]`).addClass('hidden');
+                        $(`.liked-button[data-post-id="${postId}"]`).removeClass('hidden');
+                    },
+                    error: function (error) {
+                        console.error('Failed to like post with ID: ' + postId);
+                        alert('Failed to like post. Please try again.');
+                    },
+                    complete: function () {
+                        location.reload();
+                    }
+                });
+            }
+            
+            
+            function unlikePost(postId) {
+                var userId = $('#userId').text();
+                var likedpost = {
+                    'userId': userId,
+                    'postId': postId,
+                };
+            
+                $.ajax({
+                    url: 'http://localhost:1999/api/like/' + postId,
+                    type: 'DELETE',
+                    data: JSON.stringify(likedpost),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        console.log('Unliked post with ID: ' + postId);
+                        $(`.liked-button[data-post-id="${postId}"]`).addClass('hidden');
+                        $(`.like-button[data-post-id="${postId}"]`).removeClass('hidden');
+                    },
+                    error: function (error) {
+                        console.error('Failed to unlike post with ID: ' + postId);
+                        alert('Failed to unlike post. Please try again.');
+                    },
+                    complete: function () {
+                        location.reload();
+                    }
+                });
+            }
+            
+
+
+            function deletePost(postId) {
+                var confirmDelete = confirm('Bạn chắc chắn muốn xóa bài viết này ?');
+                if (confirmDelete) {
+                    $.ajax({
+                        url: 'http://localhost:1999/api/posts/' + postId,
+                        type: 'DELETE',
+                        success: function () {
+                            $('#postContainer').empty();
+                            alert('Xóa Thành Công !');
+                        },
+                        error: function () {
+                            alert('Failed to delete the post.');
+                        }
+                    });
+                } else {
+                    console.log('Deletion canceled.');
+                }
             }
 
             function displayComments(comments) {
+                var userRole = $('#roles').text();
+                var userId = parseInt($('#userId').text());
                 commentList.empty();
-
+            
                 comments.forEach(function (comment) {
+                    var formattedDate = new Date(comment.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
                     var commentItem = '<div class="comment-item">' +
-                        '<p>Comment ID: ' + comment.commentId + '</p>' +
-                        '<p>Username: ' + comment.user.username + '</p>' +
-                        '<p>Email: ' + comment.user.email + '</p>' +
-                        '<p>Content: ' + comment.content + '</p>' +
-                        '<p>Created At: ' + comment.createdAt + '</p>' +
+                        '<div class="userwrapper">' +
+                        '<h3>' + comment.user.username + '</h3>' +
+                        '<h4>-' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>Bình luận:</p>' +
+                        '<input type="text" class="comment-info" value="' + comment.content + '" id="commentid_' + comment.commentId + '">' +
+                        '<button type="button" class="three-dots-button" onclick="$(\'#options_' + comment.commentId + '\').toggleClass(\'show-options\')">...</button>' +
+                        '<div class="comment-options" id="options_' + comment.commentId + '">';
+            
+                    if ((userRole.includes('ROLE_USER') && comment.user.userId === userId) || userRole.includes('ROLE_ADMIN')) {
+                        var deleteButton = '<button type="button" onclick="deleteComment(' + comment.commentId + ')">Xóa bình luận</button>';
+                        var updateButton = '<button type="button" onclick="updateComment(' + comment.commentId + ')">Cập nhật</button>';
+                        commentItem += deleteButton + updateButton;
+                    }
+            
+                    commentItem += '</div>' +
                         '</div>';
-
+            
                     commentList.append(commentItem);
                 });
             }
-
-            function likePost(postId) {
-                console.log('Liked post with ID: ' + postId);
+            
+            
+            function editPost(postId) {
+                var editUrl = '/post/edit/' + postId;
+                window.location.href = editUrl;
             }
-
+            
             function toggleComments(postId) {
                 if (commentsVisible) {
                     commentSection.hide();

@@ -11,18 +11,15 @@ public class UserController {
     public String showUsers(Model model) {
         return "user/alluser";
     }
-    
 
-    @GetMapping("/user/userProfile") 
+    @GetMapping("/user/profile") 
     @PreAuthorize("hasAuthority('ROLE_USER')") 
     public String userProfile() { 
-        return "Welcome to User Profile"; 
+        return "user/profileuser"; 
     } 
-  
-    @GetMapping("/admin/adminProfile") 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')") 
-    public String adminProfile() { 
-        return "Welcome to Admin Profile"; 
-    } 
-    
+    @GetMapping("/user/profile/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String userProfile(@PathVariable Long userId, Model model) {
+        return "user/profileuser";
+    }
 }

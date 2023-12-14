@@ -27,6 +27,7 @@ public class PostService {
     public void saveImage(Image image) {
         imageRepository.save(image);
     }
+
     public Post createPost(Post post) {
         return postRepository.save(post);
     }
@@ -40,7 +41,18 @@ public class PostService {
         }
     }
 
+    public List<Post> getPostsByUsername(String username) {
+        return postRepository.findByUserUsername(username);
+    }
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
+    }
+
+    public void deletePostAndImages(Post post) {
+        List<Image> images = post.getImages();
+        for (Image image : images) {
+            imageRepository.deleteById(image.getImageId());
+        }
+        postRepository.delete(post);
     }
 }
