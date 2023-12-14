@@ -12,12 +12,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database().ref('Friendships');
-const saveFriendship = (user1, user2, frienshipStatus, friendshipId) => {
-    var newdb = db.child("userId"+friendshipId);
+const saveFriendshipFirebase = (user1, user2, frienshipStatus, friendshipId) => {
+    var newdb = db.child("friendshipId"+friendshipId);
 
     newdb.set({
-        user1_id: user1,
-        user2_id: user2,
+        user1_id: parseInt(user1),
+        user2_id: parseInt(user2),
         frienshipStatus: frienshipStatus,
     });
 }
@@ -37,8 +37,8 @@ function executeFunctionBasedOnTopic() {
 }
 
 function addFriendship(user1_id, user2_id, status){
-    var user1 = user1_id;
-    var user2 = user2_id;
+    var user1 = parseInt(user1_id);
+    var user2 = parseInt(user2_id);
     var friendship_status = status;
     var newFriendships = {
         "status": friendship_status
@@ -48,8 +48,10 @@ function addFriendship(user1_id, user2_id, status){
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(newFriendships),
-        success: function(response) {
-            
+        success: function(data) {
+            var friendshipId = data.friendshipId;
+            console.log(friendshipId);
+            saveFriendshipFirebase(user1, user2, friendship_status, friendshipId);
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -65,7 +67,9 @@ function updateStatus(user1_id, user2_id, status) {
     $.ajax({
         url: 'http://localhost:1999/api/friendship/edit-status/?userId1='+user1+'&userId2='+user2+'&status='+friendship_status,
         type: 'PUT',
-        success: function() {
+        success: function(data) {
+            var friendshipId = data.friendshipId;
+            saveFriendshipFirebase(user1, user2, friendship_status, friendshipId);
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -88,73 +92,95 @@ function deleteFriendship(user1_id, user2_id) {
     })
 }
 
-// function deleteFriendship()
-
 function loadFriend() {
-    var userId = $("#userId").text();
+    var userId = parseInt($("#userId").text());
+    var status = 'ACCEPTED';
     console.log(userId);
-    $.ajax({
-        url: 'http://localhost:1999/api/profile/'+userId+'/?status=ACCEPTED',
-        type: 'GET',
-        success: function (data) {
-            populateUserData(data)
-        },
-        error: function () {
-            alert('Failed to fetch user data.');
-        }
+    var friendshipRef = db;
+    
+    // Sử dụng sự kiện on('value', ...) thay vì once('value', ...)
+    friendshipRef.on('value', function(snapshot) {
+        $("#friendshipForm").empty(); // Xóa các thẻ HTML hiện tại để tránh việc thêm liên tục
+        snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+            if (data.frienshipStatus === status && data.user1_id === userId) {
+                var user2 = data.user2_id;
+                $.ajax({
+                    url: 'http://localhost:1999/api/profile/' + user2,
+                    type: 'GET',
+                    success: function(data) {
+                        populateUserData(data);
+                    },
+                    error: function() {
+                        alert('Failed to fetch user data.');
+                    }
+                });
+            }
+        });
     });
+}
 
-    function populateUserData(data) {
-        for (var friend of data) {
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
-                + '<div class="card-body">'
-                + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p></div></div>';
-            $("#friendshipForm").append(card );
-        }
-    }
+function populateUserData(data) {
+    var friend = data;
+    var card = '<div class="card" style="width: 18rem;">' +
+        '<img src="..." class="card-img-top" alt="...">' +
+        '<div class="card-body">' +
+        '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p></div></div>';
+    $("#friendshipForm").append(card);
 }
 
 function loadRequested() {
-    var userId = $("#userId").text();
+    var userId = parseInt($("#userId").text());
+    var status = 'REQUESTED';
     console.log(userId);
-    $.ajax({
-        url: 'http://localhost:1999/api/profile/'+userId+'/?status=REQUESTED',
-        type: 'GET',
-        success: function (data) {
-            populateUserData(data)
-        },
-        error: function () {
-            alert('Failed to fetch user data.');
-        }
-    });
+    var friendshipRef = db;
 
-    function populateUserData(data) {
-        for (var friend of data) {
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
-                + '<div class="card-body">'
-                + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
-                + '<button class="btn btn-add btn-primary" id="decline'+friend.userId+'">Từ chối</button>'
-                +  '</div></div>';
-            $(".container1").append(card);
-            $("#accepted"+friend.userId).click(function() {
-                var userId1 = $("#userId").text();
-                var userId2 = friend.userId;
-                var status = 'ACCEPTED';
-                updateStatus(userId1, userId2, status);
-                updateStatus(userId2, userId1, status);
-            })
-            $("#decline"+friend.userId).click(function() {
-                console.log("delete");
-                var userId1 = $("#userId").text();
-                var userId2 = friend.userId;
-                deleteFriendship(userId1, userId2);
-                deleteFriendship(userId2, userId1);
-            })
-        }
-    }
+    friendshipRef.on('value', function(snapshot) {
+        $("#friendshipForm").empty();
+        snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+            if (data.frienshipStatus === status && data.user1_id === userId) {
+                var user2 = data.user2_id;
+                $(".container1").empty();
+                $.ajax({
+                    url: 'http://localhost:1999/api/profile/' + user2,
+                    type: 'GET',
+                    success: function(data) {
+                        populateReuqested(data);
+                    },
+                    error: function() {
+                        alert('Failed to fetch user data.');
+                    }
+                });
+            }
+        });
+    });
+}
+
+function populateReuqested(data) {
+    var friend = data;
+    var card = '<div class="card" style="width: 18rem;">'
+        + '<img src="..." class="card-img-top" alt="...">'
+        + '<div class="card-body">'
+        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
+        + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
+        + '<button class="btn btn-add btn-primary" id="decline'+friend.userId+'">Từ chối</button>'
+        +  '</div></div>';
+    $(".container1").append(card);
+    $("#accepted"+friend.userId).click(function() {
+        var userId1 = $("#userId").text();
+        var userId2 = friend.userId;
+        var status = 'ACCEPTED';
+        updateStatus(userId1, userId2, status);
+        updateStatus(userId2, userId1, status);
+    })
+    $("#decline"+friend.userId).click(function() {
+        console.log("delete");
+        var userId1 = $("#userId").text();
+        var userId2 = friend.userId;
+        deleteFriendship(userId1, userId2);
+        deleteFriendship(userId2, userId1);
+    })
 }
 
 function loadAddFriend() {
@@ -181,19 +207,23 @@ function loadAddFriend() {
                 + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'
                 +  '</div></div>';
             $(".container1").append(card);
-
-            $("#addfr" + friend.userId).click(function() {
-               
-                var userId1 = $("#userId").text();
-                var userId2 = friend.userId;
-                var status = 'SENDED';
-                addFriendship(userId1, userId2, status);
-                status = 'REQUESTED';
-                addFriendship(userId2, userId1, status);
-                // saveFriendship(userId1, userId2, status);
-            });
+    
+            // Tạo một hàm để bắt giữ giá trị của friend tại thời điểm này
+            (function(currentFriend) {
+                document.getElementById("addfr" + currentFriend.userId).addEventListener("click", function() {
+                    $("#addfr"+currentFriend.userId).text("Đã gửi lời mời kết bạn");
+                    var userId1 = $("#userId").text();
+                    var userId2 = currentFriend.userId;
+                    var status = 'SENDED';
+                    addFriendship(userId1, userId2, status);
+                    status = 'REQUESTED';
+                    addFriendship(userId2, userId1, status);
+                    // saveFriendship(userId1, userId2, status);
+                });
+            })(friend);
         }
     }
+    
 }
 
 // Gọi hàm khi trang tải xong
