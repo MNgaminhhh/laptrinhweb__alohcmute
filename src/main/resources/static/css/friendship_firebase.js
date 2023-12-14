@@ -49,7 +49,7 @@ function addFriendship(user1_id, user2_id, status){
         contentType: 'application/json',
         data: JSON.stringify(newFriendships),
         success: function(response) {
-            
+            location.reload();
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -66,12 +66,13 @@ function updateStatus(user1_id, user2_id, status) {
         url: 'http://localhost:1999/api/friendship/edit-status/?userId1='+user1+'&userId2='+user2+'&status='+friendship_status,
         type: 'PUT',
         success: function() {
+            location.reload();
         },
         error: function(error) {
             console.log(error.responseJSON.message)
         }
     })
-    alert("Đã chấp nhận lời mời kết bạn");
+    
 }
 
 function deleteFriendship(user1_id, user2_id) {
@@ -81,14 +82,13 @@ function deleteFriendship(user1_id, user2_id) {
         url: 'http://localhost:1999/api/friendship/delete/?userId1='+user1+'&userId2='+user2,
         type: 'DELETE',
         success: function() {
+            location.reload();
         },
         error: function(error) {
             console.log(error.responseJSON.message)
         }
     })
 }
-
-// function deleteFriendship()
 
 function loadFriend() {
     var userId = $("#userId").text();
@@ -106,13 +106,24 @@ function loadFriend() {
 
     function populateUserData(data) {
         for (var friend of data) {
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
+            var shortBio = friend.bio.length > 50 ? friend.bio.substring(0, 50) + '...' : friend.bio;
+            var card = '<div class="user-info-card">'
+                + '<img src="/images/avatar.jpg" class="img" alt="">'
                 + '<div class="card-body">'
-                + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p></div></div>';
+                + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
+                + '<p class="card-bio">'+shortBio+'</p>'
+                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
+                +'</div></div>';
             $("#friendshipForm").append(card );
+            $("#delete"+friend.userId).click(function() {
+                var userId1 = $("#userId").text();
+                var userId2 = friend.userId;
+                deleteFriendship(userId1, userId2);
+                deleteFriendship(userId2, userId1);
+            });
         }
     }
+    
 }
 
 function loadRequested() {
@@ -131,14 +142,15 @@ function loadRequested() {
 
     function populateUserData(data) {
         for (var friend of data) {
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
+            var shortBio = friend.bio.length > 50 ? friend.bio.substring(0, 50) + '...' : friend.bio;
+            var card = '<div class="user-info-card">'
+                + '<img src="/images/avatar.jpg" class="img" alt="">'
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
-                + '<button class="btn btn-add btn-primary" id="decline'+friend.userId+'">Từ chối</button>'
-                +  '</div></div>';
-            $(".container1").append(card);
+                + '<p class="card-bio">'+shortBio+'</p>'
+                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
+                +'</div></div>';
+                $("#friendshipForm").append(card );
             $("#accepted"+friend.userId).click(function() {
                 var userId1 = $("#userId").text();
                 var userId2 = friend.userId;
@@ -173,15 +185,15 @@ function loadAddFriend() {
 
     function populateUserData(data) {
         for (var friend of data) {
-            console.log(friend);
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
+            var shortBio = friend.bio.length > 50 ? friend.bio.substring(0, 50) + '...' : friend.bio;
+            var card = '<div class="user-info-card">'
+                + '<img src="/images/avatar.jpg" class="img" alt="">'
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'
-                +  '</div></div>';
-            $(".container1").append(card);
-
+                + '<p class="card-bio">'+shortBio+'</p>'
+                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
+                +'</div></div>';
+            $("#friendshipForm").append(card );
             $("#addfr" + friend.userId).click(function() {
                
                 var userId1 = $("#userId").text();
