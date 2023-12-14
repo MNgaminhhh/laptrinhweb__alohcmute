@@ -36,6 +36,14 @@
     width: auto;
 }
 
+.new-msg {
+  width: 100%;
+}
+
+.dropdown-menu {
+  width: 100%;
+}
+
 .profile-name {
     align-self: auto;
     float: right;
@@ -50,6 +58,12 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #f8f9fa;
     cursor: pointer;
+}
+
+.friend:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
+  cursor: pointer;
 }
 
 #chat-container {

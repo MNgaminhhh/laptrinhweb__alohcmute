@@ -21,6 +21,23 @@ const saveFriendshipFirebase = (user1, user2, frienshipStatus, friendshipId) => 
         frienshipStatus: frienshipStatus,
     });
 }
+const deleteFriendshipByUsers = (user1, user2) => {
+    var friendshipRef = db.orderByChild('user1_id').equalTo(parseInt(user1));
+
+    friendshipRef.once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            if (childSnapshot.val().user2_id === parseInt(user2)) {
+                childSnapshot.ref.remove()
+                    .then(() => {
+                        console.log("Friendship removed successfully!");
+                    })
+                    .catch((error) => {
+                        console.error("Error removing friendship:", error);
+                    });
+            }
+        });
+    });
+}
 
 function executeFunctionBasedOnTopic() {
     var divElement = $('[data-topic]');
@@ -97,10 +114,9 @@ function loadFriend() {
     var status = 'ACCEPTED';
     console.log(userId);
     var friendshipRef = db;
-    
-    // Sử dụng sự kiện on('value', ...) thay vì once('value', ...)
+
     friendshipRef.on('value', function(snapshot) {
-        $("#friendshipForm").empty(); // Xóa các thẻ HTML hiện tại để tránh việc thêm liên tục
+        $("#friendshipForm").empty();
         snapshot.forEach(function(childSnapshot) {
             var data = childSnapshot.val();
             if (data.frienshipStatus === status && data.user1_id === userId) {
@@ -125,8 +141,16 @@ function populateUserData(data) {
     var card = '<div class="card" style="width: 18rem;">' +
         '<img src="..." class="card-img-top" alt="...">' +
         '<div class="card-body">' +
-        '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p></div></div>';
+        '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p>'+
+        '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa bạn</button></div></div>';
     $("#friendshipForm").append(card);
+    $("#delete"+friend.userId).click(function() {
+        console.log("delete");
+        var userId1 = $("#userId").text();
+        var userId2 = friend.userId;
+        deleteFriendship(userId1, userId2);
+        deleteFriendship(userId2, userId1);
+    })
 }
 
 function loadRequested() {
