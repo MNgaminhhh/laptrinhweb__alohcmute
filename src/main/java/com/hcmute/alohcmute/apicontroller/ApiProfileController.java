@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hcmute.alohcmute.Dto.UpdateProfileRequest;
 import com.hcmute.alohcmute.entity.Profile;
+import com.hcmute.alohcmute.enums.FriendshipStatus;
 import com.hcmute.alohcmute.service.ProfileService;
 
 @RestController

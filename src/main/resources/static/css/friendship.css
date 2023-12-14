@@ -19,3 +19,8 @@ section {
     color: black;
     font-family: cursive;
 }
+
+section {
+    padding-left: 400px;
+    height: 90vh;
+}

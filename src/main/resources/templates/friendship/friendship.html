@@ -18,121 +18,24 @@
         <p id="userId" th:text="${userId}"></p>
         <div th:if="${topic == 'friend'}" data-topic="friend">
             <h2 id="list-title">Tất cả bạn bè</h2>
-            <div class="container1"></div>
+            <div class="container1">
+                <form action="" id="friendshipForm"></form>
+            </div>
         </div>
         
         <div th:if="${topic == 'requested'}" data-topic="requested">
             <h2 id="list-title">Yêu cầu kết bạn</h2>
-            <div class="container1"></div>
+            <div class="container1">
+                <form action="" id="friendshipForm"></form>
+            </div>
         </div>
 
         <div th:if="${topic == 'add_friend'}" data-topic="add_friend">
             <h2 id="list-title">Thêm bạn</h2>
-            <div class="container1"></div>
+            <div class="container1">
+            </div>
         </div>
     </section>
-    <!-- config firebase -->
-    <script th:inline="javascript">
-        function executeFunctionBasedOnTopic() {
-            var divElement = $('[data-topic]');
-            if (divElement.length > 0) {
-                var topicValue = divElement.attr('data-topic');
-                if (topicValue === 'friend') {
-                    loadFriend();
-                } else if (topicValue === 'requested') {
-                    loadRequested();
-                } else {
-                    loadAddFriend();
-                }
-            }
-        }
-    
-        function loadFriend() {
-            var userId = $("#userId").text();
-            console.log(userId);
-            $.ajax({
-                url: 'http://localhost:1999/api/profile/'+userId+'/?status=ACCEPTED',
-                type: 'GET',
-                success: function (data) {
-                    populateUserData(data)
-                },
-                error: function () {
-                    alert('Failed to fetch user data.');
-                }
-            });
-
-            function populateUserData(data) {
-                for (var friend of data) {
-                    var card = '<div class="card" style="width: 18rem;">'
-                        + '<img src="..." class="card-img-top" alt="...">'
-                        + '<div class="card-body">'
-                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p></div></div>';
-                    $(".container1").append(card );
-                }
-            }
-        }
-    
-        function loadRequested() {
-            var userId = $("#userId").text();
-            console.log(userId);
-            $.ajax({
-                url: 'http://localhost:1999/api/profile/'+userId+'/?status=REQUESTED',
-                type: 'GET',
-                success: function (data) {
-                    populateUserData(data)
-                },
-                error: function () {
-                    alert('Failed to fetch user data.');
-                }
-            });
-
-            function populateUserData(data) {
-                for (var friend of data) {
-                    console.log(friend);
-                    var card = '<div class="card" style="width: 18rem;">'
-                        + '<img src="..." class="card-img-top" alt="...">'
-                        + '<div class="card-body">'
-                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                        + '<a href="#" class="btn btn-primary">Chấp nhận</a>'
-                        +  '<a href="#" class="btn btn-primary">Xóa</a></div></div>';
-                    $(".container1").append(card);
-                }
-            }
-        }
-
-        function loadAddFriend() {
-            var userId = $("#userId").text();
-            console.log(userId);
-            $.ajax({
-                url: 'http://localhost:1999/api/profile/'+userId+'/notfriend',
-                type: 'GET',
-                success: function (data) {
-                    populateUserData(data)
-                },
-                error: function () {
-                    alert('Failed to fetch user data.');
-                }
-            });
-
-            function populateUserData(data) {
-                for (var friend of data) {
-                    console.log(friend);
-                    var card = '<div class="card" style="width: 18rem;">'
-                        + '<img src="..." class="card-img-top" alt="...">'
-                        + '<div class="card-body">'
-                        + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                        + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'
-                        +  '</div></div>';
-                    $(".container1").append(card);
-                }
-            }
-        }
-    
-        // Gọi hàm khi trang tải xong
-        $(document).ready(function() {
-            executeFunctionBasedOnTopic();
-        });
-    </script>
     <script th:src="@{/css/friendship.js}"></script>
     <script th:if="${type_friendship == 'ACCEPTED'}" th:inline="javascript">
         $(document).ready(function() {
@@ -144,39 +47,10 @@
             $("#all-requested").css("background-color", "#0d6efd");
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.20.0-202088235442/firebase-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.20.0-202088235442/firebase-database.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', async (event) => {
-            // Your web app's Firebase configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyAYTzE1F3gZiHU274TiSb5FV85VtCpRw9Q",
-                authDomain: "alohcmute-71b8f.firebaseapp.com",
-                databaseURL: "https://alohcmute-71b8f-default-rtdb.firebaseio.com",
-                projectId: "alohcmute-71b8f",
-                storageBucket: "alohcmute-71b8f.appspot.com",
-                messagingSenderId: "682697103488",
-                appId: "1:682697103488:web:799a8dbf97c95ec5ea6e65",
-                measurementId: "G-M4CGJ5VVKH"
-            };
-    
-            try {
-                // Dynamically import Firebase modules
-                const firebaseApp = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
-                const firebaseDatabase = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
-    
-                // Initialize Firebase
-                const app = firebaseApp.initializeApp(firebaseConfig);
-                const db = firebaseDatabase.getDatabase();
-                const dataRef = firebaseDatabase.ref(db, '/uers');
-                
-                
-            } catch (error) {
-                console.error("Failed to import Firebase modules:", error);
-            }
-        });
-    </script>
-    
-    
+    <script th:src="@{/css/firebase.js}"></script>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
 </body>
 </html>

@@ -26,7 +26,11 @@ public class ProfileService {
         this.profileRespository = profileRepository;
     }
 
-    public Optional<Profile> getProfileUser(Long userID) {
+    public List<Profile> findAllProfiles() {
+        return profileRespository.findAll();
+    }
+
+    public Optional<Profile> findProfileById(Long userID) {
         return profileRespository.findById(userID);
     }
 
@@ -56,19 +60,19 @@ public class ProfileService {
     public Profile updateProfile(Long userId, UpdateProfileRequest request) {
     Optional<Profile> existingProfile = profileRespository.findById(userId);
 
-    if (existingProfile.isPresent()) {
-        Profile profile = existingProfile.get();
-        profile.setFirstName(request.getFirstName());
-        profile.setLastName(request.getLastName());
-        profile.setDateOfBirth(LocalDate.parse(request.getDateOfBirth()));
-        profile.setGender(Gender.valueOf(request.getGender()));
-        profile.setBio(request.getBio());
+        if (existingProfile.isPresent()) {
+            Profile profile = existingProfile.get();
+            profile.setFirstName(request.getFirstName());
+            profile.setLastName(request.getLastName());
+            profile.setDateOfBirth(LocalDate.parse(request.getDateOfBirth()));
+            profile.setGender(Gender.valueOf(request.getGender()));
+            profile.setBio(request.getBio());
 
-        return profileRespository.save(profile);
-    } else {
-        return null;
+            return profileRespository.save(profile);
+        } else {
+            return null;
+        }
     }
-}
 
     public void deleteProfile(Long userId) {
         profileRespository.deleteById(userId);
