@@ -48,8 +48,11 @@ public class FriendshipService {
         }
     }
 
-    public void deleteFriendship(Long id) {
-        friendshipRepository.deleteById(id);
+    public void deleteFriendship(Long userId1, Long userId2) {
+        Optional<Friendship> friendship = friendshipRepository.findRelationship(userId1, userId2);
+        if (friendship.isPresent()) {
+            friendshipRepository.delete(friendship.get());
+        }
     }
 
     public Friendship updateStatus(Long userId1, Long userId2, FriendshipStatus status) {
