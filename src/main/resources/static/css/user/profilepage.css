@@ -212,7 +212,43 @@ h2, p {
     padding: 20px;
     margin: 20px 0;
 }
+.user-account-info {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px 0;
+}
 
+.user-account-info input,
+.user-account-info textarea,
+.user-account-info select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.user-account-info textarea {
+  resize: vertical;
+}
+
+.user-account-info button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  margin-right: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.user-account-info button:hover {
+  background-color: #45a049;
+}
 .user-profile input,
 .user-profile textarea,
 .user-profile select {
