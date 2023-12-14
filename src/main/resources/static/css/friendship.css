@@ -1,0 +1,76 @@
+section {
+    display: block;
+    padding-left: 20px;
+}
+
+.container1 {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 800px;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.btn-group-vertical {
+    width: 100%;
+}
+
+.btn-group-vertical > button {
+    height: 50px;
+    background-color: #279b04; 
+    border: 1px solid #279b04;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-group-vertical > button:hover {
+    background-color: #a70a0a;
+}
+
+.user-info-card .card-body {
+    text-align: center;
+}
+
+.card-text {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.card-bio {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+}
+
+.user-info-card {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.user-info-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    transition: transform 0.1s ease-in-out;
+    border: 2px solid #3498db;
+}
+
+.user-info-card:hover{
+    transform: scale(1.05);
+}

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thông Tin Tài Khoản | ALOHCMUTE</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link th:href="@{../../../css/user/profilepage.css}" rel="stylesheet">
+    <link th:href="@{../../../css/style.css}" rel="stylesheet">
+    <link th:href="@{../../../css/footer.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/admin/template_admin.html::header}"></div>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <div th:insert="~{common/user/template_user.html::header}"></div>
+    </div>
+    <div class="container1">
+        <div class="content">
+            <div class="post">
+                <div sec:authorize="isAuthenticated()">
+                    <div class="user-info-card" sec:authorize="isAuthenticated()">
+                        <img th:src="@{/images/avatar.jpg}" class="img" alt="">
+                        <h2 id="userFullName"></h2>
+                        <p>Tên tài khoản: <span id="userName"></span></p>
+                        <p style="display: none;">Roles: <span id="userRoles"></span></p>
+                        <p style="display: none;">ID: <span id="userID"></span></p>
+                    </div>
+                    <button class="buttonMore" id="toggleProfileBtn" onclick="toggleUserProfile()">Thông tin tài khoản</button>
+                </div>
+                
+                <div id="postContainer"></div>
+                <button class="buttonMore" id="togglePostBtn" onclick="toggleUserPosts()">Các Bài Đăng</button>
+                <div id="postUserContainer"></div>
+
+            </div>
+
+            <div class="menu">        
+                <h2>Menu</h2>
+                <a href="/">
+                    <div class="card">
+                        <h3>Trang chủ</h3>
+                    </div>
+                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>  
+            </div>
+        </div>
+    </div>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+
+    <script>
+        function toggleUserProfile() {
+            var container = $('#postContainer');
+            var button = $('#toggleProfileBtn');
+
+            if (container.is(':visible')) {
+                container.hide();
+                button.text('Thông tin tài khoản');
+            } else {
+                loadUserProfile();
+                container.show();
+                button.text('Đóng thông tin tài khoản');
+            }
+        }
+        loadUserInfo();
+        function loadUserInfo() {
+            var userId = getUserIdFromUrl();
+                $.ajax({
+                url: 'http://localhost:1999/api/users/' + userId,
+                type: 'GET',
+                success: function(user) {
+                    $('#userAvatar').attr('src', user.avatarUrl || '/images/default-avatar.jpg');
+                    $('#userFullName').text(user.profile.firstName + " " + user.profile.lastName);
+                    $('#userName').text(user.username);
+                    $('#userRoles').text(user.isAdmin);
+                    $('#userID').text(user.userId);
+                },
+                error: function(error) {
+                    console.error('Error fetching user information:', error);
+                }
+            });
+        }
+        function loadUserProfile() {
+            var userId = getUserIdFromUrl();
+            if (!userId) {
+                console.error('User ID not found in the URL.');
+                return;
+            }
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/' + userId,
+                type: 'GET',
+                success: function (data) {
+                    displayUserProfile(data);
+                },
+                error: function () {
+                    handleUserProfileNotFound();
+                }
+            });
+        }
+        function getUserIdFromUrl() {
+            var matches = window.location.pathname.match(/\/friendships\/friend\/profile\/(\d+)/);
+            return matches ? matches[1] : null;
+        }
+        
+        function handleUserProfileNotFound() {
+            displayUserProfile(null);
+        }
+        function displayUserProfile(profile) {
+            $('#postContainer').empty();
+        
+            if (profile != null) {
+                var userProfileHtml = '<div class="user-profile">' +
+                    '<h2>Thông Tin Tài Khoản</h2>' +
+                    '<br>' +
+                    '<p>User ID: <input type="text" id="inputUserId" value="' + profile.userId + '" readonly></p>' +
+                    '<p>First Name: <input type="text" id="inputFirstName" value="' + profile.firstName + '"></p>' +
+                    '<p>Last Name: <input type="text" id="inputLastName" value="' + profile.lastName + '"></p>' +
+                    '<p>Date of Birth: <input type="date" id="inputDateOfBirth" value="' + profile.dateOfBirth + '"></p>' +
+                    '<p>Gender: <select id="inputGender">' +
+                    '<option value="MALE" ' + (profile.gender === 'MALE' ? 'selected' : '') + '>Male</option>' +
+                    '<option value="FEMALE" ' + (profile.gender === 'FEMALE' ? 'selected' : '') + '>Female</option>' +
+                    '<option value="OTHER" ' + (profile.gender === 'OTHER' ? 'selected' : '') + '>Other</option>' +
+                    '</select></p>' +
+                    '<p>Bio: <textarea id="inputBio">' + profile.bio + '</textarea></p>' +
+                    '</div>';
+        
+                $('#postContainer').append(userProfileHtml);
+        
+            } else {
+                var insertUserProfileHtml = '<div class="user-profile">' +
+                    '<h2>Thông Tin Tài Khoản</h2>' +
+                    '<br>' +
+                    '<p>User ID: <input type="text" id="inputUserId" readonly></p>' +
+                    '<p>First Name: <input type="text" id="inputFirstName"></p>' +
+                    '<p>Last Name: <input type="text" id="inputLastName"></p>' +
+                    '<p>Date of Birth: <input type="date" id="inputDateOfBirth"></p>' +
+                    '<p>Gender: <select id="inputGender">' +
+                    '<option value="MALE">Male</option>' +
+                    '<option value="FEMALE">Female</option>' +
+                    '<option value="OTHER">Other</option>' +
+                    '</select></p>' +
+                    '<p>Bio: <textarea id="inputBio"></textarea></p>' +
+                    '<button onclick="insertUserProfile()">Thêm Thông Tin</button>' +
+                    '</div>';
+        
+                $('#postContainer').append(insertUserProfileHtml);
+            }
+        }
+        
+        function insertUserProfile() {
+            var userId = getUserIdFromUrl();
+            if (!userId) {
+                console.error('User ID not found in the URL.');
+                return;
+            }
+            var newProfile = {
+                'firstName': $('#inputFirstName').val(),
+                'lastName': $('#inputLastName').val(),
+                'dateOfBirth': $('#inputDateOfBirth').val(),
+                'gender': $('#inputGender').val(),
+                'bio': $('#inputBio').val()
+            };
+            $.ajax({
+                url: 'http://localhost:1999/api/profile/' + userId,
+                type: 'POST',
+                data: JSON.stringify(newProfile),
+                contentType: 'application/json',
+                success: function (data) {
+                    
+                    alert('Profile inserted successfully.');
+                },
+                error: function () {
+                    alert('Failed to insert user profile.');
+                }
+            });
+        }
+        function toggleUserPosts() {
+            var container = $('#postUserContainer');
+            var button = $('#togglePostBtn');
+        
+            if (container.is(':visible')) {
+                container.hide();
+                button.text('Bài đăng của tôi');
+            } else {
+                loadUserPostProfile();
+                container.show();
+                button.text('Đóng bài đăng');
+            }
+        }
+        
+        function loadUserPostProfile() {
+            var username = $('#userName').text();
+            $.ajax({
+                url: 'http://localhost:1999/api/posts/byUsername?username=' + username,
+                type: 'GET',
+                success: function (data) {
+                    displayUserPosts(data);
+                },
+                error: function () {
+                    alert('Failed to fetch user posts.');
+                }
+            });
+        }
+        
+        function displayUserPosts(posts) {
+            $('#postUserContainer').empty();
+            
+            if (posts.length > 0) {
+                var postListHtml = '<div class="userpostprofile">';
+                posts.forEach(function (post) {
+                    var postCard = '<div class="card1">' +
+                        '<a href="http://localhost:1999/post/' + post.postId + '">' +
+                        '<h3>' + post.user.username + '</h3>' +
+                        '<p>Email: ' + post.user.email + '</p>' +
+                        '<p>Post ID: ' + post.postId + '</p>' +
+                        '<p>Content: ' + post.content + '</p>' +
+                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
+                        '</a>' +
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
+                        '</div>';
+            
+                    postListHtml += postCard;
+                });
+                postListHtml += '</div>';
+            
+                $('#postUserContainer').append(postListHtml);
+            } else {
+                var noPostsHtml = '<p>No posts found for this user.</p>';
+                $('#postUserContainer').append(noPostsHtml);
+            }
+            
+        }
+ 
+    
+    </script>
+</body>
+
+</html>

@@ -36,23 +36,50 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span sec:authentication="name"> </span></p>
-                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                        <br>
+                        <p>Tên tài khoản: <span sec:authentication="name"> </span></p>
+                        <p style="display: none;">Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
-                </div>  
+                </div>       
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
                     </div>
                 </a>
-                <a href="tinnhan.html">
-                    <div class="card">
-                        <h3>Tin nhắn</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>  
+                
                 <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                     <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
                         <div class="card">
@@ -180,18 +207,20 @@
                 var isLiked = isLikedPost(post);
                 var likeButton = '<button type="button" class="like-button ' + (isLiked ? 'hidden' : '') + '" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>';
                 var likedButton = '<button type="button" class="liked-button ' + (isLiked ? '' : 'hidden') + '" data-post-id="' + post.postId + '">Đã thích (' + post.likes.length + ')</button>';
+                var formattedDate = new Date(post.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
                 var postCard = '<div class="card1">' +
-                    '<h3>' + post.user.username + '</h3>' +
-                    '<p>Email: ' + post.user.email + '</p>' +
-                    '<p>Post ID: ' + post.postId + '</p>' +
-                    '<p>Content: ' + post.content + '</p>' +
-                    '<p>Created At: ' + post.createdAt + '</p>' +
+                    '<div class="post-header">' +
+                        '<h3>' + post.user.username + '</h3>' +
+                        '<h4>' + ' - ' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>' + post.content + '</p>' +
                     '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
                     likeButton +
                     likedButton +
                     '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
                     '<button type="button" class="three-dots">...</button>';
-            
+
+
                 if ((userRole.includes('ROLE_USER') && isUserPost) || isAdmin) {
                     var editButton = '<button type="button" class="edit-button" data-post-id="' + post.postId + '">Chỉnh Sửa Bài Viết</button>';
                     var deleteButton = '<button type="button" class="delete-button" data-post-id="' + post.postId + '">Xóa Bài Viết</button>';

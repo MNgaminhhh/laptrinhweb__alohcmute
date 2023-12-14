@@ -68,7 +68,7 @@ body {
   object-fit: cover;
   border-radius: 50%;
   position: absolute;
-  top: 25px; 
+  top: 15px; 
   left: 20px; 
   transition: transform 0.1s ease-in-out; 
   box-sizing: content-box;

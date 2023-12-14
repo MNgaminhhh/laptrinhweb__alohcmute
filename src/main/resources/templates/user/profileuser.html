@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Trang Chủ | ALOHCMUTE</title>
+    <title>Thông Tin Tài Khoản | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link th:href="@{../../css/user/profilepage.css}" rel="stylesheet">
     <link th:href="@{../../css/style.css}" rel="stylesheet">
@@ -23,10 +23,9 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span id="usernamee" sec:authentication="name"> </span></p>
-                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                        <h2>Tên tài khoản: <span id="usernamee" sec:authentication="name"> </span></h2>
+                        <p style="display: none;">Roles: <span sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>
                     <button class="buttonMore" id="toggleProfileBtn" onclick="toggleUserProfile()">Thông tin tài khoản</button>
                     <button class="buttonMore" onclick="toggleUserAccount()">Hiển Thị/Ẩn Thông Tin Tài Khoản</button>
@@ -45,16 +44,53 @@
                         <h3>Trang chủ</h3>
                     </div>
                 </a>
-                <a href="tinnhan.html">
-                    <div class="card">
-                        <h3>Tin nhắn</h3>
-                    </div>
-                </a>
-                <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
-                    <div class="card">
-                        <h3>Trang cá nhân</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="@{'/admin/users/profiles/' + ${#authentication.principal.userId}}">
+                        <div class="card">
+                            <h3>Trang cá nhân</h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -276,18 +312,19 @@
             if (posts.length > 0) {
                 var postListHtml = '<div class="userpostprofile">';
                 posts.forEach(function (post) {
+                    var formattedDate = new Date(post.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+                    var truncatedContent = post.content.length > 300 ? post.content.substring(0, 300) + '...' : post.content;
                     var postCard = '<div class="card1">' +
                         '<a href="http://localhost:1999/post/' + post.postId + '">' +
+                        '<div class="post-header">' +
                         '<h3>' + post.user.username + '</h3>' +
-                        '<p>Email: ' + post.user.email + '</p>' +
-                        '<p>Post ID: ' + post.postId + '</p>' +
-                        '<p>Content: ' + post.content + '</p>' +
-                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<h4>' + ' - ' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>' + truncatedContent + '</p>' +
                         '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '</a>' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                        '</div>';
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
+                        '</a>';
             
                     postListHtml += postCard;
                 });
