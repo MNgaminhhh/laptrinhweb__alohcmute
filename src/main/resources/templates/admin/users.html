@@ -17,7 +17,11 @@
     </div>
     <div class="containeradmin"> 
         <h1>Quản Lý Tài Khoản</h1>
-        
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Nhập username...">
+            <button id="searchBtn">Tìm Kiếm</button>
+            <button id="resetBtn">Reset</button>
+        </div>
         <div class="menu" id="userListContainer">
             
         </div>
@@ -26,10 +30,12 @@
 
     <script>
         $(document).ready(function() {
+            var originalUsers;
             $.ajax({
                 url: '/api/users',
                 type: 'GET',
                 success: function(users) {
+                    originalUsers = users;
                     displayUserList(users);
                 },
                 error: function(error) {
@@ -59,6 +65,19 @@
                     console.log('Delete user with ID:', userId);
                 });
             }
+            $('#searchBtn').click(function() {
+                var searchTerm = $('#searchInput').val().toLowerCase();
+                var filteredUsers = originalUsers.filter(function(user) {
+                    return user.username.toLowerCase().includes(searchTerm);
+                });
+                displayUserList(filteredUsers);
+            });
+    
+            // Xử lý sự kiện khi nút reset được nhấn
+            $('#resetBtn').click(function() {
+                $('#searchInput').val('');
+                displayUserList(originalUsers);
+            });
         });
     </script>
     

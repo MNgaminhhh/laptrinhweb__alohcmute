@@ -57,9 +57,12 @@ body {
     margin: 5px 0;
     color: #777;
 }
-
+#searchInput {
+    padding: 8px;
+    margin-right: 10px;
+}
 .update-btn,
-.delete-btn {
+.delete-btn, button {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -76,6 +79,6 @@ body {
 }
 
 .update-btn:hover,
-.delete-btn:hover {
+.delete-btn:hover, button:hover {
     background-color: #45a049;
 }

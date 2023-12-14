@@ -22,8 +22,8 @@ form {
 
 .btn-group-vertical > button {
     height: 50px;
-    background-color: #3498db; /* Màu xanh dương */
-    border: 1px solid #3498db;
+    background-color: #279b04; 
+    border: 1px solid #279b04;
     color: #fff;
     font-family: 'Arial', sans-serif;
     cursor: pointer;
@@ -31,7 +31,7 @@ form {
 }
 
 .btn-group-vertical > button:hover {
-    background-color: #2980b9;
+    background-color: #a70a0a;
 }
 
 .user-info-card .card-body {
