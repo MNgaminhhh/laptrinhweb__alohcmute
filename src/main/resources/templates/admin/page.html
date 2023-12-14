@@ -3,7 +3,6 @@
 <head>
     <title>Trang Quản Trị | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <!-- Custom styles for this template -->
     <link th:href="@{css/style.css}" rel="stylesheet">
     <link th:href="@{css/footer.css}" rel="stylesheet">
     <link th:href="@{css/admin/adminpage.css}" rel="stylesheet">
@@ -34,11 +33,7 @@
                     <h3>Quản Lý Tài Khoản</h3>
                 </div>
             </a>
-            <a href="tinnhan.html">
-                <div class="card">
-                    <h3>Tin nhắn</h3>
-                </div>
-            </a>
+            
             <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                 <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
                     <div class="card">
