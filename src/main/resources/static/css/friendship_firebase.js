@@ -138,8 +138,8 @@ function loadFriend() {
 
 function populateUserData(data) {
     var friend = data;
-    var card = '<div class="card" style="width: 18rem;">' +
-        '<img src="..." class="card-img-top" alt="...">' +
+    var card = '<div class="card" style="width: 18rem; height: 4rem">' +
+        '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">' +
         '<div class="card-body">' +
         '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p>'+
         '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa bạn</button></div></div>';
@@ -183,8 +183,8 @@ function loadRequested() {
 
 function populateReuqested(data) {
     var friend = data;
-    var card = '<div class="card" style="width: 18rem;">'
-        + '<img src="..." class="card-img-top" alt="...">'
+    var card = '<div class="card" style="width: 18rem; height: 4rem">'
+        + '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">'
         + '<div class="card-body">'
         + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
         + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
@@ -204,6 +204,8 @@ function populateReuqested(data) {
         var userId2 = friend.userId;
         deleteFriendship(userId1, userId2);
         deleteFriendship(userId2, userId1);
+        deleteFriendshipByUsers(userId1, userId2);
+        deleteFriendshipByUsers(userId2, userId1);
     })
 }
 
@@ -224,8 +226,8 @@ function loadAddFriend() {
     function populateUserData(data) {
         for (var friend of data) {
             console.log(friend);
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
+            var card = '<div class="card" style="width: 18rem; height: 4rem" >'
+                + '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">'
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
                 + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'
