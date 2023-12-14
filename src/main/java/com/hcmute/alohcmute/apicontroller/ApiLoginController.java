@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import com.hcmute.alohcmute.Dto.AuthRequest;
+import com.hcmute.alohcmute.Dto.ResetPasswordRequest;
 import com.hcmute.alohcmute.entity.PasswordResetToken;
 import com.hcmute.alohcmute.entity.User;
 import com.hcmute.alohcmute.service.EmailService;
@@ -87,4 +88,18 @@ public class ApiLoginController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to initiate password reset.");
         }
     }
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        try {
+            String email = passwordResetTokenService.getEmailFromToken(token);
+            service.resetPassword(email, resetPasswordRequest.getNewPassword());
+            passwordResetTokenService.deleteToken(token);
+            return ResponseEntity.ok("Đặt lại mật khẩu thành công.");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đặt lại mật khẩu thất bại.");
+        }
+    }
+    
 }

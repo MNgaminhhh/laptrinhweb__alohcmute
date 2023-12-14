@@ -28,8 +28,8 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
         message.setTo(email);
-        message.setSubject("Password Reset Request");
-        message.setText("Click the link below to reset your password:\n\n"
+        message.setSubject("[ALOHCMUTE] ĐẶT LẠI MẬT KHẨU");
+        message.setText("Nhấn vào đường dẫn bên dưới để chuyển đến trang đặt lại mật khẩu đã quên:\n\n"
                 + "http://localhost:1999/reset-password?token=" + token);
         javaMailSender.send(message);
 

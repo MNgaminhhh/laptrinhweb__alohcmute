@@ -49,4 +49,22 @@ public class PasswordResetTokenService {
     private void sendPasswordResetEmail(String email, String token) {
             emailService.sendPasswordResetEmail(email, token);
     }
+    public void deleteToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passwordResetToken != null) {
+            passwordResetTokenRepository.delete(passwordResetToken);
+        } else {
+            throw new RuntimeException("Token not found");
+        }
+    }
+    public String getEmailFromToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passwordResetToken != null && !passwordResetToken.isExpired()) {
+            return passwordResetToken.getUser().getEmail();
+        } else {
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
 }
