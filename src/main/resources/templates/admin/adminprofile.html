@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Thông Tin Tài Khoản| ALOHCMUTE</title>
+    <title>Thông Tin Tài Khoản | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link th:href="@{../../../css/user/profilepage.css}" rel="stylesheet">
-    <link th:href="@{../../../css/style.css}" rel="stylesheet">
-    <link th:href="@{../../../css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/user/profilepage.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
 </head>
 
 <body>
@@ -23,20 +23,21 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span id="usernamee" sec:authentication="name"> </span></p>
-                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                        <h2>Tên tài khoản: <span id="usernamee" sec:authentication="name"> </span></h2>
+                        <p style="display: none;">Roles: <span sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>
                     <button class="buttonMore" id="toggleProfileBtn" onclick="toggleUserProfile()">Thông tin tài khoản</button>
+                    <button class="buttonMore" onclick="toggleUserAccount()">Hiển Thị/Ẩn Thông Tin Tài Khoản</button>
                 </div>
+                <div id="UserAccContainer"></div>
                 <div id="postContainer"></div>
                 <button class="buttonMore" id="togglePostBtn" onclick="toggleUserPosts()">Bài đăng của tôi</button>
                 <div id="postUserContainer"></div>
 
             </div>
 
-            <div class="menu">   
+            <div class="menu">
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
@@ -89,13 +90,30 @@
                             <h3>Trang cá nhân</h3>
                         </div>
                     </a>
-                </div>  
+                </div>
             </div>
         </div>
     </div>
     <div th:insert="~{common/user/template_user.html::footer}"></div>
 
     <script>
+       
+        function getUserIdFromUrl() {
+            var matches = window.location.pathname.match(/\/user\/profile\/(\d+)/);
+            return matches ? matches[1] : null;
+        }
+
+        function toggleUserAccount() {
+            var userAccContainer = $('#UserAccContainer');
+
+            if (userAccContainer.is(':visible')) {
+                userAccContainer.hide();
+            } else {
+                loadUserAccInfo();
+                userAccContainer.show();
+            }
+        }
+
         function toggleUserProfile() {
             var container = $('#postContainer');
             var button = $('#toggleProfileBtn');
@@ -109,6 +127,73 @@
                 button.text('Đóng thông tin tài khoản');
             }
         }
+        function loadUserAccInfo() {
+            var userId = getUserIdFromUrl();
+            console.log(userId);
+            $.ajax({
+            url: 'http://localhost:1999/api/users/' + userId,
+            type: 'GET',
+            success: function(user) {
+                displayUserAccountInfo(user);
+            },
+            error: function(error) {
+                console.error('Error fetching user information:', error);
+            }
+            });
+        }
+        function displayUserAccountInfo(user) {
+            $('#UserAccContainer').empty();
+            var formattedCreatedAt = new Date(user.createdAt).toLocaleString();
+            var userAccHtml = '<div class="user-account-info">' +
+                '<h2>Thông Tin Tài Khoản</h2>' +
+                '<br>' +
+                '<p>Username: <input type="text" id="inputUsername" value="' + user.username + '"></p>' +
+                '<p>Email: <input type="text" id="inputEmail" value="' + user.email + '"></p>' +
+                '<p>Created At: <input type="text" id="inputCreatedAt" value="' + formattedCreatedAt + '" readonly></p>' +
+                '<button onclick="updateUserAccount()">Cập Nhật</button>' +
+                '<button onclick="deleteUserAccount()">Xóa Tài Khoản</button>' +
+                '</div>';
+            $('#UserAccContainer').append(userAccHtml);
+        }
+        function deleteUserAccount() {
+            var userId = $('#inputUserId').val();
+
+            if (confirm('Bạn có chắc chắn muốn xóa tài khoản này ?')) {
+                $.ajax({
+                    url: 'http://localhost:1999/api/users/' + userId,
+                    type: 'DELETE',
+                    success: function (data) {
+                        alert('Xóa Thành Công !');
+                        window.location.href = '/admin/users';
+                    },
+                    error: function () {
+                        alert('Failed to delete user account.');
+                    }
+                });
+            }
+        }
+        function updateUserAccount() {
+            var userId = $('#inputUserId').val();
+            var updatedUser = {
+                'username': $('#inputUsername').val(),
+                'email': $('#inputEmail').val(),
+                'isAdmin': $('#inputRole').val()
+            };
+        
+            $.ajax({
+                url: 'http://localhost:1999/api/users/' + userId,
+                type: 'PUT',
+                data: JSON.stringify(updatedUser),
+                contentType: 'application/json',
+                success: function (data) {
+                    alert('User account updated successfully.');
+                },
+                error: function () {
+                    alert('Failed to update user account.');
+                }
+            });
+        }
+        
 
         function loadUserProfile() {
             var userId = $('#userId').text();
@@ -227,18 +312,19 @@
             if (posts.length > 0) {
                 var postListHtml = '<div class="userpostprofile">';
                 posts.forEach(function (post) {
+                    var formattedDate = new Date(post.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+                    var truncatedContent = post.content.length > 300 ? post.content.substring(0, 300) + '...' : post.content;
                     var postCard = '<div class="card1">' +
                         '<a href="http://localhost:1999/post/' + post.postId + '">' +
+                        '<div class="post-header">' +
                         '<h3>' + post.user.username + '</h3>' +
-                        '<p>Email: ' + post.user.email + '</p>' +
-                        '<p>Post ID: ' + post.postId + '</p>' +
-                        '<p>Content: ' + post.content + '</p>' +
-                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<h4>' + ' - ' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>' + truncatedContent + '</p>' +
                         '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '</a>' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                        '</div>';
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
+                        '</a>';
             
                     postListHtml += postCard;
                 });

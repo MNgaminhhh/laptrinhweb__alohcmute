@@ -110,12 +110,14 @@ function loadFriend() {
             var card = '<div class="user-info-card">'
                 + '<img src="/images/avatar.jpg" class="img" alt="">'
                 + '<div class="card-body">'
-                + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
-                + '<p class="card-bio">'+shortBio+'</p>'
-                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
-                +'</div></div>';
-            $("#friendshipForm").append(card );
-            $("#delete"+friend.userId).click(function() {
+                + '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p>'
+                + '<p class="card-bio">' + shortBio + '</p>'
+                + '<a href="http://localhost:1999/friendships/friend/profile/' + friend.userId + '" class="btn btn-add btn-primary profile-link">Trang Cá Nhân</a>'
+                + '<button class="btn btn-add btn-primary" id="delete' + friend.userId + '">Xóa Kết Bạn</button>'
+                + '</div></div>';
+            $("#friendshipForm").append(card);
+
+            $("#delete" + friend.userId).click(function () {
                 var userId1 = $("#userId").text();
                 var userId2 = friend.userId;
                 deleteFriendship(userId1, userId2);
@@ -123,6 +125,8 @@ function loadFriend() {
             });
         }
     }
+    
+    
     
 }
 
@@ -148,9 +152,10 @@ function loadRequested() {
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
                 + '<p class="card-bio">'+shortBio+'</p>'
-                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
+                + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
+                + '<button class="btn btn-add btn-primary" id="decline'+friend.userId+'">Từ chối</button>'
                 +'</div></div>';
-                $("#friendshipForm").append(card );
+            $("#friendshipForm").append(card );
             $("#accepted"+friend.userId).click(function() {
                 var userId1 = $("#userId").text();
                 var userId2 = friend.userId;
@@ -191,11 +196,11 @@ function loadAddFriend() {
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
                 + '<p class="card-bio">'+shortBio+'</p>'
-                + '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa Kết Bạn</button>'
-                +'</div></div>';
+                + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'
+                +  '</div></div>';
+
             $("#friendshipForm").append(card );
             $("#addfr" + friend.userId).click(function() {
-               
                 var userId1 = $("#userId").text();
                 var userId2 = friend.userId;
                 var status = 'SENDED';

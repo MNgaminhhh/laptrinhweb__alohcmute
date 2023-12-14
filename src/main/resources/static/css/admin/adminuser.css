@@ -21,7 +21,17 @@ body {
     justify-content: space-around;
     margin-top: 20px;
 }
-
+.post-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .post-header h3 {
+    margin-right: 5px;
+  }
+  .post-header h4 {
+    color: #696969;
+  }
 .user-card {
     width: 300px;
     border: 1px solid #ddd;

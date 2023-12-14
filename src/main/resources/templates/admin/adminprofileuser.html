@@ -256,18 +256,19 @@
             if (posts.length > 0) {
                 var postListHtml = '<div class="userpostprofile">';
                 posts.forEach(function (post) {
+                    var formattedDate = new Date(post.createdAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' });
+                    var truncatedContent = post.content.length > 300 ? post.content.substring(0, 300) + '...' : post.content;
                     var postCard = '<div class="card1">' +
                         '<a href="http://localhost:1999/post/' + post.postId + '">' +
+                        '<div class="post-header">' +
                         '<h3>' + post.user.username + '</h3>' +
-                        '<p>Email: ' + post.user.email + '</p>' +
-                        '<p>Post ID: ' + post.postId + '</p>' +
-                        '<p>Content: ' + post.content + '</p>' +
-                        '<p>Created At: ' + post.createdAt + '</p>' +
+                        '<h4>' + ' - ' + formattedDate + '</h4>' +
+                        '</div>' +
+                        '<p>' + truncatedContent + '</p>' +
                         '<img src="' + post.images[0].filePath + '" alt="Post Image" class="img-file" style="width: 800px; height: 500px;">' +
-                        '</a>' +
-                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Like (' + post.likes.length + ')</button>' +
-                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">View Comments</button>' +
-                        '</div>';
+                        '<button type="button" class="like-button" data-post-id="' + post.postId + '">Thích (' + post.likes.length + ')</button>' +
+                        '<button type="button" class="comment-button" data-post-id="' + post.postId + '">Xem Bình Luận</button>' +
+                        '</a>';
             
                     postListHtml += postCard;
                 });
