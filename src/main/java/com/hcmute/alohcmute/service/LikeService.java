@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hcmute.alohcmute.Dto.LikeDto;
-import com.hcmute.alohcmute.entity.Comment;
 import com.hcmute.alohcmute.entity.Like;
 import com.hcmute.alohcmute.entity.Post;
 import com.hcmute.alohcmute.entity.User;

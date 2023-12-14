@@ -36,18 +36,45 @@
 
             </div>
 
-            <div class="menu">
+            <div class="menu">   
                 <h2>Menu</h2>
                 <a href="/">
                     <div class="card">
                         <h3>Trang chủ</h3>
                     </div>
                 </a>
-                <a href="tinnhan.html">
-                    <div class="card">
-                        <h3>Tin nhắn</h3>
-                    </div>
-                </a>
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/message/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Tin nhắn</h3>
+                        </div>
+                    </a>
+                </div>  
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <a th:href="'/friendships/friend/'+${#authentication.principal.userId}">
+                        <div class="card">
+                            <h3>Bạn bè</h3>
+                        </div>
+                    </a>
+                </div>  
+                
                 <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
                     <a th:href="@{'/user/profile/' + ${#authentication.principal.userId}}">
                         <div class="card">

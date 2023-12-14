@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hcmute.alohcmute.Dto.UpdateProfileRequest;
 import com.hcmute.alohcmute.entity.Profile;
+import com.hcmute.alohcmute.enums.FriendshipStatus;
 import com.hcmute.alohcmute.service.ProfileService;
 
 @RestController
@@ -29,6 +30,18 @@ public class ApiProfileController {
         Optional<Profile> profile = profileService.findProfileById(userId);
         return profile.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/{userId}/notfriend")
+    public ResponseEntity<List<Profile>> getProfileUserNotBeFriend(@PathVariable Long userId) {
+        List<Profile> profile = profileService.getProfileUserNotBeFriend(userId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
+    
+    @GetMapping("/{userId}/")
+    public ResponseEntity<List<Profile>> getProfileFriend(@PathVariable Long userId, @RequestParam FriendshipStatus status) {
+        List<Profile> profile = profileService.getProfileFriend(userId, status);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
     @PostMapping("/{userId}")

@@ -1,0 +1,26 @@
+section {
+    display: block;
+}
+
+.container1 {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.btn-group-vertical {
+    width: 100%;
+}
+ 
+.btn-group-vertical > button {
+    height: 50px;
+    background-color: #f1f1f1;
+    border-color: black;
+    color: black;
+    font-family: cursive;
+}
+
+section {
+    padding-left: 400px;
+    height: 90vh;
+}

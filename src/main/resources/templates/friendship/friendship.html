@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>FriendShip</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/left.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/friendship.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div th:insert="~{common/user/template_user.html::header}"></div>
+    <div th:insert="~{common/user/template_user.html::user-left}">
+        
+    </div>
+    <section>
+        <p id="userId" th:text="${userId}"></p>
+        <div th:if="${topic == 'friend'}" data-topic="friend">
+            <h2 id="list-title">Tất cả bạn bè</h2>
+            <div class="container1">
+                <form action="" id="friendshipForm"></form>
+            </div>
+        </div>
+        
+        <div th:if="${topic == 'requested'}" data-topic="requested">
+            <h2 id="list-title">Yêu cầu kết bạn</h2>
+            <div class="container1">
+                <form action="" id="friendshipForm"></form>
+            </div>
+        </div>
+
+        <div th:if="${topic == 'add_friend'}" data-topic="add_friend">
+            <h2 id="list-title">Thêm bạn</h2>
+            <div class="container1">
+            </div>
+        </div>
+    </section>
+    <script th:src="@{/css/friendship.js}"></script>
+    <script th:if="${type_friendship == 'ACCEPTED'}" th:inline="javascript">
+        $(document).ready(function() {
+            $("#all-friend").css("background-color", "#0d6efd");
+        });
+    </script>
+    <script th:if="${type_friendship == 'REQUESTED'}" th:inline="javascript">
+        $(document).ready(function() {
+            $("#all-requested").css("background-color", "#0d6efd");
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.20.0-202088235442/firebase-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.20.0-202088235442/firebase-database.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script th:src="@{/css/firebase.js}"></script>
+    <div th:insert="~{common/user/template_user.html::footer}"></div>
+</body>
+</html>
