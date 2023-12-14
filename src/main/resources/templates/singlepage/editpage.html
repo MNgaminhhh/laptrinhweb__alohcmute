@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Trang Chủ | ALOHCMUTE</title>
+    <title>Chỉnh Sửa Bài Đăng | ALOHCMUTE</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link th:href="@{../../css/page/editpage.css}" rel="stylesheet">
     <link th:href="@{../../css/style.css}" rel="stylesheet">
@@ -37,10 +37,10 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span sec:authentication="name"> </span></p>
-                        <p>Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                        <br>
+                        <p>Tên tài khoản: <span sec:authentication="name"> </span></p>
+                        <p style="display: none;">Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
                 <h2>Menu</h2>
@@ -203,6 +203,7 @@
                         contentType: 'application/json',
                         success: function (updatedPost) {
                             console.log('Post updated successfully:', updatedPost);
+                            window.location.href = "/";
                         },
                         error: function () {
                             alert('Failed to update post.');

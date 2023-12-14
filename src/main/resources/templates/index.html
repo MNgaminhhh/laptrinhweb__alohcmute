@@ -22,39 +22,39 @@
 
     <div class="container1">
         <div class="content">
-
             <div class="post" id="postContainer">
                 <div class="post-button-container" sec:authorize="isAuthenticated()">
                     <button class="post-button" onclick="togglePostForm()">Đăng Bài</button>
                 </div>
-                      
+                
                 <div class="post-form" id="postForm" style="display: none;">
                     <div class="card">
-                        <h2>Post</h2>
-                        <textarea id="postContent" rows="4" placeholder="Enter your post content"></textarea>
-
+                        
+                        <textarea id="postContent" rows="4" placeholder="Nhập tiêu đề bài đăng..."></textarea>
+                        
                         <div class="image-preview" id="imagePreview">
                             <label for="uploadImage" class="custom-file-upload" id="uploadImageLabel" ondragover="handleDragOver(event)" ondrop="handleFileSelect(event)">
-                                Drag and drop image here or click to upload
+                                Kéo hoặc nhấn vào để tải ảnh lên...
                             </label>
                             <input type="file" id="uploadImage" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
                         </div>
                         <br>
-                        <button type="button" onclick="removeUploadedImage()">Remove Image</button>
-                        <button type="button" onclick="uploadImage()">Upload Image</button>
+                        <button type="button" onclick="removeUploadedImage()">Xóa Ảnh</button>
+                        <button type="button" onclick="uploadImage()">Tải Ảnh Lên</button>
                         <br>
-                        <button type="button" onclick="submitPost()">Post</button>
+                        <button type="button" onclick="submitPost()">Đăng Bài</button>
                     </div>
                 </div>
+                <h1>Các Bài Đăng</h1>
             </div>
             <div class="menu">
                 <div sec:authorize="isAuthenticated()">
                     <div class="user-info-card" sec:authorize="isAuthenticated()">
                         <img th:src="@{/images/avatar.jpg}" class="img" alt="">
-                        <h2>User Information</h2>
-                        <p>Logged user: <span sec:authentication="name"> </span></p>
-                        <p>Roles: <span sec:authentication="principal.authorities"> </span></p>
-                        <p>Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
+                        <br>
+                        <p>Tên tài khoản: <span sec:authentication="name"> </span></p>
+                        <p style="display: none;">Roles: <span id="roles" sec:authentication="principal.authorities"> </span></p>
+                        <p style="display: none;">Id: <span id="userId" th:text="${#authentication.principal.userId}"></span></p>
                     </div>  
                 </div>        
                 <h2>Menu</h2>
