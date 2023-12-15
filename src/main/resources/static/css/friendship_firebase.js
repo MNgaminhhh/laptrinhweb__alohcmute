@@ -37,7 +37,6 @@ const deleteFriendshipByUsers = (user1, user2) => {
     });
 };
 
-deleteFriendshipByUsers(1, 2);
 
 
 function executeFunctionBasedOnTopic() {
@@ -102,8 +101,7 @@ function deleteFriendship(user1_id, user2_id) {
         url: 'http://localhost:1999/api/friendship/delete/?userId1='+user1+'&userId2='+user2,
         type: 'DELETE',
         success: function() {
-            deleteFriendshipByUsers(user1, user2)
-
+            deleteFriendshipByUsers(user1, user2);
         },
         error: function(error) {
             console.log(error.responseJSON.message)
