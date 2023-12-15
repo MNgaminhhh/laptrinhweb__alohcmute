@@ -22,22 +22,23 @@ const saveFriendshipFirebase = (user1, user2, frienshipStatus, friendshipId) => 
     });
 }
 const deleteFriendshipByUsers = (user1, user2) => {
-    var friendshipRef = db.orderByChild('user1_id').equalTo(parseInt(user1));
+    var friendshipRef = db;
+    console.log("delete");
+    user1 = parseInt(user1);
+    user2 = parseInt(user2);
 
-    friendshipRef.once('value', (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-            if (childSnapshot.val().user2_id === parseInt(user2)) {
-                childSnapshot.ref.remove()
-                    .then(() => {
-                        console.log("Friendship removed successfully!");
-                    })
-                    .catch((error) => {
-                        console.error("Error removing friendship:", error);
-                    });
+    friendshipRef.once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+            if (data.user1_id === user1 && data.user2_id === user2) {
+                childSnapshot.ref.remove();
             }
         });
     });
-}
+};
+
+deleteFriendshipByUsers(1, 2);
+
 
 function executeFunctionBasedOnTopic() {
     var divElement = $('[data-topic]');
@@ -101,6 +102,8 @@ function deleteFriendship(user1_id, user2_id) {
         url: 'http://localhost:1999/api/friendship/delete/?userId1='+user1+'&userId2='+user2,
         type: 'DELETE',
         success: function() {
+            deleteFriendshipByUsers(user1, user2)
+
         },
         error: function(error) {
             console.log(error.responseJSON.message)
