@@ -21,6 +21,23 @@ const saveFriendshipFirebase = (user1, user2, frienshipStatus, friendshipId) => 
         frienshipStatus: frienshipStatus,
     });
 }
+const deleteFriendshipByUsers = (user1, user2) => {
+    var friendshipRef = db;
+    console.log("delete");
+    user1 = parseInt(user1);
+    user2 = parseInt(user2);
+
+    friendshipRef.once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+            if (data.user1_id === user1 && data.user2_id === user2) {
+                childSnapshot.ref.remove();
+            }
+        });
+    });
+};
+
+
 
 function executeFunctionBasedOnTopic() {
     var divElement = $('[data-topic]');
@@ -75,7 +92,6 @@ function updateStatus(user1_id, user2_id, status) {
             console.log(error.responseJSON.message)
         }
     })
-    alert("Đã chấp nhận lời mời kết bạn");
 }
 
 function deleteFriendship(user1_id, user2_id) {
@@ -85,6 +101,7 @@ function deleteFriendship(user1_id, user2_id) {
         url: 'http://localhost:1999/api/friendship/delete/?userId1='+user1+'&userId2='+user2,
         type: 'DELETE',
         success: function() {
+            deleteFriendshipByUsers(user1, user2);
         },
         error: function(error) {
             console.log(error.responseJSON.message)
@@ -97,10 +114,9 @@ function loadFriend() {
     var status = 'ACCEPTED';
     console.log(userId);
     var friendshipRef = db;
-    
-    // Sử dụng sự kiện on('value', ...) thay vì once('value', ...)
+
     friendshipRef.on('value', function(snapshot) {
-        $("#friendshipForm").empty(); // Xóa các thẻ HTML hiện tại để tránh việc thêm liên tục
+        $("#friendshipForm").empty();
         snapshot.forEach(function(childSnapshot) {
             var data = childSnapshot.val();
             if (data.frienshipStatus === status && data.user1_id === userId) {
@@ -112,7 +128,7 @@ function loadFriend() {
                         populateUserData(data);
                     },
                     error: function() {
-                        alert('Failed to fetch user data.');
+                       
                     }
                 });
             }
@@ -122,11 +138,20 @@ function loadFriend() {
 
 function populateUserData(data) {
     var friend = data;
-    var card = '<div class="card" style="width: 18rem;">' +
-        '<img src="..." class="card-img-top" alt="...">' +
+    var card = '<div class="card" style="width: 18rem; height: 4rem">' +
+        '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">' +
         '<div class="card-body">' +
-        '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p></div></div>';
+        '<p class="card-text">' + friend.firstName + " " + friend.lastName + '</p>'+
+        '<a href="http://localhost:1999/friendships/friend/profile/' + friend.userId + '" class="btn btn-add btn-primary profile-link">Trang Cá Nhân</a>'+
+        '<button class="btn btn-add btn-primary" id="delete'+friend.userId+'">Xóa bạn</button></div></div>';
     $("#friendshipForm").append(card);
+    $("#delete"+friend.userId).click(function() {
+        console.log("delete");
+        var userId1 = $("#userId").text();
+        var userId2 = friend.userId;
+        deleteFriendship(userId1, userId2);
+        deleteFriendship(userId2, userId1);
+    })
 }
 
 function loadRequested() {
@@ -149,7 +174,7 @@ function loadRequested() {
                         populateReuqested(data);
                     },
                     error: function() {
-                        alert('Failed to fetch user data.');
+                       
                     }
                 });
             }
@@ -159,8 +184,8 @@ function loadRequested() {
 
 function populateReuqested(data) {
     var friend = data;
-    var card = '<div class="card" style="width: 18rem;">'
-        + '<img src="..." class="card-img-top" alt="...">'
+    var card = '<div class="card" style="width: 18rem; height: 4rem">'
+        + '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">'
         + '<div class="card-body">'
         + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
         + '<button class="btn btn-add btn-primary" id="accepted'+friend.userId+'">Chấp nhận</button>'
@@ -180,6 +205,8 @@ function populateReuqested(data) {
         var userId2 = friend.userId;
         deleteFriendship(userId1, userId2);
         deleteFriendship(userId2, userId1);
+        deleteFriendshipByUsers(userId1, userId2);
+        deleteFriendshipByUsers(userId2, userId1);
     })
 }
 
@@ -193,15 +220,15 @@ function loadAddFriend() {
             populateUserData(data)
         },
         error: function () {
-            alert('Failed to fetch user data.');
+           
         }
     });
 
     function populateUserData(data) {
         for (var friend of data) {
             console.log(friend);
-            var card = '<div class="card" style="width: 18rem;">'
-                + '<img src="..." class="card-img-top" alt="...">'
+            var card = '<div class="card" style="width: 18rem; height: 4rem" >'
+                + '<img src="http://localhost:1999/images/avatar.jpg" class="card-img-top" alt="...">'
                 + '<div class="card-body">'
                 + '<p class="card-text">'+friend.firstName+" "+friend.lastName+'</p>'
                 + '<button class="btn btn-add btn-primary" id="addfr'+friend.userId+'">Thêm bạn</button>'

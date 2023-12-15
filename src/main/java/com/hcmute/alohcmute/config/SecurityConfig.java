@@ -37,22 +37,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // return http.csrf().disable()
-        //         .authorizeHttpRequests()
-        //         .requestMatchers("/", "/css/**", "/images/**", "/register","/api/posts","/api/login").permitAll()
-        //         .requestMatchers("/api/**").authenticated()
-        //         .and()
-        //         .formLogin().loginPage("/login")
-        //         .successForwardUrl("/alluser")
-        //         .permitAll()
-        //         .and()
-        //         .build();
-
         return http.csrf().disable() 
             .authorizeHttpRequests() 
-            .requestMatchers("/reset-password","/api/reset-password","/forgot-password","/api/forgot-password","/api/addNewUser", "/api/generateToken", "/css/**", "/images/**", "/register","/api/posts","/","/api/users").permitAll() 
-            .requestMatchers("/user/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/user/profileuser","/user/profile/**", "/friendships/**", "/message/**").authenticated() 
-            .requestMatchers("/admin/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/admin/users/profileuser","/admin/users/profiles/**").authenticated() 
+            .requestMatchers("/api/addNewUser", "/api/generateToken", "/css/**", "/images/**", "/register","/api/posts","/","/api/users").permitAll() 
+            .requestMatchers("/user/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/user/profileuser","/user/profile/**", "/friendships/**", "/api/conversation/**").authenticated() 
+            .requestMatchers("/admin/**","/api/profile/**","/post/**","/api/**","/api/posts/**","/api/images","/admin/users/profileuser","/admin/users/profiles/**", "/message/**").authenticated() 
             .and() 
             .sessionManagement() 
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
